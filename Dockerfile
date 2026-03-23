@@ -16,6 +16,7 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm install --frozen-lockfile
 RUN cd packages/web && pnpm exec prisma generate
 RUN pnpm build
 
