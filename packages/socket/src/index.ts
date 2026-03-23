@@ -27,8 +27,8 @@ Config.init()
 const registry = Registry.getInstance()
 const PORT = Number(process.env.PORT) || 3001
 
-httpServer.listen(PORT, () => {
-  log(`Socket server running on port ${PORT}`)
+httpServer.listen(PORT, "0.0.0.0", () => {
+  console.log(`Socket server running on port ${PORT}`)
 })
 
 io.on("connection", (socket) => {
