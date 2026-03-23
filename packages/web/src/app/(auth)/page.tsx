@@ -1183,7 +1183,8 @@ export default function LandingPage() {
           alt="App Mockup"
           width={900}
           height={500}
-          className="inline-block"
+          unoptimized
+          className="mx-auto inline-block h-auto w-full max-w-[900px]"
         />
       </section>
 
