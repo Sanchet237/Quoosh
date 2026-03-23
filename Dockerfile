@@ -20,6 +20,8 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV RESEND_API_KEY=build_placeholder
 ENV DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder
+ENV SOCKET_URL=http://placeholder:3001
+ENV NEXT_PUBLIC_SOCKET_URL=http://placeholder:3001
 RUN pnpm install --frozen-lockfile
 RUN cd packages/web && pnpm exec prisma generate
 RUN pnpm build
