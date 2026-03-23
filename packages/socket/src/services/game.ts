@@ -1,10 +1,14 @@
-import { Answer, Player, Quizz } from "@rahoot/common/types/game"
-import { Server, Socket } from "@rahoot/common/types/game/socket"
-import { Status, STATUS, StatusDataMap } from "@rahoot/common/types/game/status"
-import { usernameValidator } from "@rahoot/common/validators/auth"
-import Registry from "@rahoot/socket/services/registry"
-import { createInviteCode, timeToPoint } from "@rahoot/socket/utils/game"
-import sleep from "@rahoot/socket/utils/sleep"
+import { Answer, Player, Quizz } from "@quoosh/common/types/game"
+import { Server, Socket } from "@quoosh/common/types/game/socket"
+import {
+  Status,
+  STATUS,
+  StatusDataMap,
+} from "@quoosh/common/types/game/status"
+import { usernameValidator } from "@quoosh/common/validators/auth"
+import Registry from "@quoosh/socket/services/registry"
+import { createInviteCode, timeToPoint } from "@quoosh/socket/utils/game"
+import sleep from "@quoosh/socket/utils/sleep"
 import { v4 as uuid } from "uuid"
 
 const registry = Registry.getInstance()
@@ -14,9 +18,9 @@ class Game {
 
   gameId: string
   manager: {
-    id: string
-    clientId: string
-    connected: boolean
+    id: string;
+    clientId: string;
+    connected: boolean;
   }
   inviteCode: string
   started: boolean
@@ -34,14 +38,14 @@ class Game {
   players: Player[]
 
   round: {
-    currentQuestion: number
-    playersAnswers: Answer[]
-    startTime: number
+    currentQuestion: number;
+    playersAnswers: Answer[];
+    startTime: number;
   }
 
   cooldown: {
-    active: boolean
-    ms: number
+    active: boolean;
+    ms: number;
   }
 
   constructor(io: Server, socket: Socket, quizz: Quizz) {
@@ -121,7 +125,7 @@ class Game {
     this.io.to(target).emit("game:status", statusData)
   }
 
-  join(socket: Socket, username: string) {
+  join(socket: Socket, username: string, avatar?: string) {
     const isAlreadyConnected = this.players.find(
       (p) => p.clientId === socket.handshake.auth.clientId,
     )
@@ -147,6 +151,7 @@ class Game {
       clientId: socket.handshake.auth.clientId,
       connected: true,
       username,
+      avatar,
       points: 0,
     }
 
@@ -265,6 +270,7 @@ class Game {
       status,
       player: {
         username: player.username,
+        avatar: player.avatar,
         points: player.points,
       },
     })

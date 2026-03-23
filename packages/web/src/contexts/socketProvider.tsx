@@ -4,15 +4,17 @@
 import {
   ClientToServerEvents,
   ServerToClientEvents,
-} from "@rahoot/common/types/game/socket"
+} from "@quoosh/common/types/game/socket"
 import ky from "ky"
 import React, {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react"
+import toast from "react-hot-toast"
 import { io, Socket } from "socket.io-client"
 import { v7 as uuid } from "uuid"
 
@@ -38,20 +40,25 @@ const SocketContext = createContext<SocketContextValue>({
   reconnect: () => {},
 })
 
+const isDev = process.env.NODE_ENV === "development"
+
+const log = (...args: any[]) => {
+  if (isDev) console.log(...args)
+}
+
+const logError = (...args: any[]) => {
+  if (isDev) console.error(...args)
+}
+
 const getSocketServer = async () =>
   await ky.get("/env").json<{ webUrl: string; socketUrl: string }>()
 
 const getClientId = (): string => {
   try {
     const stored = localStorage.getItem("client_id")
-
-    if (stored) {
-      return stored
-    }
-
+    if (stored) return stored
     const newId = uuid()
     localStorage.setItem("client_id", newId)
-
     return newId
   } catch {
     return uuid()
@@ -63,11 +70,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [webUrl, setWebUrl] = useState<string | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const [clientId] = useState<string>(() => getClientId())
+  const errorToastShown = useRef(false)
 
   useEffect(() => {
-    if (socket) {
-      return
-    }
+    if (socket) return
 
     let s: TypedSocket | null = null
 
@@ -77,9 +83,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
         s = io(socketUrl, {
           autoConnect: false,
-          auth: {
-            clientId,
-          },
+          auth: { clientId },
         })
 
         setWebUrl(webUrl)
@@ -87,17 +91,31 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
         s.on("connect", () => {
           setIsConnected(true)
+          errorToastShown.current = false
+          log("Socket connected")
         })
 
         s.on("disconnect", () => {
           setIsConnected(false)
+          log("Socket disconnected")
         })
 
         s.on("connect_error", (err) => {
-          console.error("Connection error:", err.message)
+          logError("Connection error:", err.message)
+          if (!errorToastShown.current) {
+            toast.error("Connection lost. Trying to reconnect...", {
+              id: "socket-error",
+              duration: 5000,
+            })
+            errorToastShown.current = true
+          }
         })
       } catch (error) {
-        console.error("Failed to initialize socket:", error)
+        logError("Failed to initialize socket:", error)
+        toast.error("Failed to connect to server. Please refresh the page.", {
+          id: "socket-init-error",
+          duration: 8000,
+        })
       }
     }
 
@@ -152,17 +170,23 @@ export const useEvent = <E extends keyof ServerToClientEvents>(
   callback: ServerToClientEvents[E],
 ) => {
   const { socket } = useSocket()
+  const callbackRef = useRef(callback)
 
   useEffect(() => {
-    if (!socket) {
-      return
-    }
+    callbackRef.current = callback
+  }, [callback])
 
-    socket.on(event, callback as any)
+  useEffect(() => {
+    if (!socket) return
+
+    const stableCallback = (...args: any[]) =>
+      (callbackRef.current as any)(...args)
+
+    socket.on(event, stableCallback as any)
 
     // eslint-disable-next-line consistent-return
     return () => {
-      socket.off(event, callback as any)
+      socket.off(event, stableCallback as any)
     }
-  }, [socket, event, callback])
+  }, [socket, event])
 }

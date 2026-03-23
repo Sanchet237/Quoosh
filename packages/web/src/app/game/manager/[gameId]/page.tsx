@@ -1,19 +1,19 @@
 "use client"
 
-import { STATUS } from "@rahoot/common/types/game/status"
-import GameWrapper from "@rahoot/web/components/game/GameWrapper"
-import Answers from "@rahoot/web/components/game/states/Answers"
-import Leaderboard from "@rahoot/web/components/game/states/Leaderboard"
-import Podium from "@rahoot/web/components/game/states/Podium"
-import Prepared from "@rahoot/web/components/game/states/Prepared"
-import Question from "@rahoot/web/components/game/states/Question"
-import Responses from "@rahoot/web/components/game/states/Responses"
-import Room from "@rahoot/web/components/game/states/Room"
-import Start from "@rahoot/web/components/game/states/Start"
-import { useEvent, useSocket } from "@rahoot/web/contexts/socketProvider"
-import { useManagerStore } from "@rahoot/web/stores/manager"
-import { useQuestionStore } from "@rahoot/web/stores/question"
-import { GAME_STATE_COMPONENTS_MANAGER } from "@rahoot/web/utils/constants"
+import { STATUS } from "@quoosh/common/types/game/status"
+import GameWrapper from "@quoosh/web/components/game/GameWrapper"
+import Answers from "@quoosh/web/components/game/states/Answers"
+import Leaderboard from "@quoosh/web/components/game/states/Leaderboard"
+import Podium from "@quoosh/web/components/game/states/Podium"
+import Prepared from "@quoosh/web/components/game/states/Prepared"
+import Question from "@quoosh/web/components/game/states/Question"
+import Responses from "@quoosh/web/components/game/states/Responses"
+import Room from "@quoosh/web/components/game/states/Room"
+import Start from "@quoosh/web/components/game/states/Start"
+import { useEvent, useSocket } from "@quoosh/web/contexts/socketProvider"
+import { useManagerStore } from "@quoosh/web/stores/manager"
+import { useQuestionStore } from "@quoosh/web/stores/question"
+import { GAME_STATE_COMPONENTS_MANAGER } from "@quoosh/web/utils/constants"
 import { useParams, useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
@@ -48,7 +48,7 @@ const ManagerGame = () => {
   )
 
   useEvent("game:reset", (message) => {
-    router.replace("/manager")
+    router.replace("/dashboard")
     reset()
     setQuestionStates(null)
     toast.error(message)
@@ -121,7 +121,7 @@ const ManagerGame = () => {
       break
 
     case STATUS.FINISHED:
-      component = <Podium data={status.data} />
+      component = <Podium data={status.data} onGoHome={() => router.push("/dashboard")} />
 
       break
   }

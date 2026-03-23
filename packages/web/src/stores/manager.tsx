@@ -1,6 +1,6 @@
-import { Player } from "@rahoot/common/types/game"
-import { StatusDataMap } from "@rahoot/common/types/game/status"
-import { createStatus, Status } from "@rahoot/web/utils/createStatus"
+import { Player } from "@quoosh/common/types/game"
+import { StatusDataMap } from "@quoosh/common/types/game/status"
+import { createStatus, Status } from "@quoosh/web/utils/createStatus"
 import { create } from "zustand"
 
 type ManagerStore<T> = {

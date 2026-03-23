@@ -1,5 +1,7 @@
-import { ManagerStatusDataMap } from "@rahoot/common/types/game/status"
+import { ManagerStatusDataMap } from "@quoosh/common/types/game/status"
+import { getAvatarSrc } from "@quoosh/web/utils/avatars"
 import { AnimatePresence, motion, useSpring, useTransform } from "motion/react"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 
 type Props = {
@@ -44,12 +46,12 @@ const Leaderboard = ({ data: { oldLeaderboard, leaderboard } }: Props) => {
 
   return (
     <section className="relative mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-2">
-      <h2 className="mb-6 text-5xl font-bold text-white drop-shadow-md">
+      <h2 className="mb-4 text-3xl font-bold text-white drop-shadow-md sm:mb-6 sm:text-5xl">
         Leaderboard
       </h2>
       <div className="flex w-full flex-col gap-2">
         <AnimatePresence mode="popLayout">
-          {displayedLeaderboard.map(({ id, username, points }) => (
+          {displayedLeaderboard.map(({ id, username, avatar, points }) => (
             <motion.div
               key={id}
               layout
@@ -70,9 +72,18 @@ const Leaderboard = ({ data: { oldLeaderboard, leaderboard } }: Props) => {
                   damping: 25,
                 },
               }}
-              className="bg-primary flex w-full justify-between rounded-md p-3 text-2xl font-bold text-white"
+              className="bg-primary flex w-full items-center justify-between gap-2 rounded-md p-2 text-lg font-bold text-white sm:gap-3 sm:p-3 sm:text-2xl"
             >
-              <span className="drop-shadow-md">{username}</span>
+              <div className="flex items-center gap-3">
+                <Image
+                  src={getAvatarSrc(avatar)}
+                  alt={username}
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 rounded-lg bg-white/20 object-contain p-0.5"
+                />
+                <span className="drop-shadow-md">{username}</span>
+              </div>
               {isAnimating ? (
                 <AnimatedPoints
                   from={oldLeaderboard.find((u) => u.id === id)?.points || 0}

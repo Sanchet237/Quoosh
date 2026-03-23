@@ -1,23 +1,26 @@
-"use client"
+﻿"use client"
 
-import { ManagerStatusDataMap } from "@rahoot/common/types/game/status"
-import useScreenSize from "@rahoot/web/hooks/useScreenSize"
+import { ManagerStatusDataMap } from "@quoosh/common/types/game/status"
+import useScreenSize from "@quoosh/web/hooks/useScreenSize"
+import { getAvatarSrc } from "@quoosh/web/utils/avatars"
 import {
   SFX_PODIUM_FIRST,
   SFX_PODIUM_SECOND,
   SFX_PODIUM_THREE,
   SFX_SNEAR_ROOL,
-} from "@rahoot/web/utils/constants"
+} from "@quoosh/web/utils/constants"
 import clsx from "clsx"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import ReactConfetti from "react-confetti"
 import useSound from "use-sound"
 
 type Props = {
   data: ManagerStatusDataMap["FINISHED"]
+  onGoHome?: () => void
 }
 
-const Podium = ({ data: { subject, top } }: Props) => {
+const Podium = ({ data: { subject, top }, onGoHome }: Props) => {
   const [apparition, setApparition] = useState(0)
 
   const { width, height } = useScreenSize()
@@ -99,6 +102,23 @@ const Podium = ({ data: { subject, top } }: Props) => {
           <div className="spotlight"></div>
         </div>
       )}
+      {/* Go Home button — appears after animation completes */}
+      {onGoHome && (
+        <div
+          className={clsx(
+            "fixed bottom-8 left-1/2 z-50 -translate-x-1/2 opacity-0 transition-all duration-700",
+            { "opacity-100": apparition >= 4 },
+          )}
+        >
+          <button
+            onClick={onGoHome}
+            className="rounded-2xl bg-white px-8 py-3 text-lg font-black text-[#1c1a00] italic shadow-2xl transition-transform hover:scale-105 active:scale-95"
+          >
+            🏠 Go Home
+          </button>
+        </div>
+      )}
+
       <section className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-between">
         <h2 className="anim-show text-center text-3xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl">
           {subject}
@@ -115,9 +135,16 @@ const Podium = ({ data: { subject, top } }: Props) => {
                 { "translate-y-0! opacity-100": apparition >= 2 },
               )}
             >
+              <Image
+                src={getAvatarSrc(top[1].avatar)}
+                alt={top[1].username}
+                width={60}
+                height={60}
+                className="h-14 w-14 rounded-xl bg-white/20 object-contain p-1 shadow-lg"
+              />
               <p
                 className={clsx(
-                  "overflow-visible text-center text-2xl font-bold whitespace-nowrap text-white drop-shadow-lg md:text-4xl",
+                  "w-full text-center text-xs font-bold break-words text-white drop-shadow-lg sm:text-sm md:text-2xl lg:text-4xl",
                   {
                     "anim-balanced": apparition >= 4,
                   },
@@ -147,9 +174,17 @@ const Podium = ({ data: { subject, top } }: Props) => {
               },
             )}
           >
+            {" "}
+            <Image
+              src={getAvatarSrc(top[0].avatar)}
+              alt={top[0].username}
+              width={64}
+              height={64}
+              className="h-16 w-16 rounded-xl bg-white/20 object-contain p-1 shadow-lg"
+            />{" "}
             <p
               className={clsx(
-                "overflow-visible text-center text-2xl font-bold whitespace-nowrap text-white opacity-0 drop-shadow-lg md:text-4xl",
+                "w-full text-center text-xs font-bold break-words text-white opacity-0 drop-shadow-lg sm:text-sm md:text-2xl lg:text-4xl",
                 { "anim-balanced opacity-100": apparition >= 4 },
               )}
             >
@@ -174,9 +209,16 @@ const Podium = ({ data: { subject, top } }: Props) => {
                 },
               )}
             >
+              <Image
+                src={getAvatarSrc(top[2].avatar)}
+                alt={top[2].username}
+                width={56}
+                height={56}
+                className="h-12 w-12 rounded-xl bg-white/20 object-contain p-1 shadow-lg"
+              />
               <p
                 className={clsx(
-                  "overflow-visible text-center text-2xl font-bold whitespace-nowrap text-white drop-shadow-lg md:text-4xl",
+                  "w-full text-center text-xs font-bold break-words text-white drop-shadow-lg sm:text-sm md:text-2xl lg:text-4xl",
                   {
                     "anim-balanced": apparition >= 4,
                   },

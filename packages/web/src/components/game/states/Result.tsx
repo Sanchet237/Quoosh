@@ -1,10 +1,10 @@
 "use client"
 
-import { CommonStatusDataMap } from "@rahoot/common/types/game/status"
-import CricleCheck from "@rahoot/web/components/icons/CricleCheck"
-import CricleXmark from "@rahoot/web/components/icons/CricleXmark"
-import { usePlayerStore } from "@rahoot/web/stores/player"
-import { SFX_RESULTS_SOUND } from "@rahoot/web/utils/constants"
+import { CommonStatusDataMap } from "@quoosh/common/types/game/status"
+import CricleCheck from "@quoosh/web/components/icons/CricleCheck"
+import CricleXmark from "@quoosh/web/components/icons/CricleXmark"
+import { usePlayerStore } from "@quoosh/web/stores/player"
+import { SFX_RESULTS_SOUND } from "@quoosh/web/utils/constants"
 import { useEffect } from "react"
 import useSound from "use-sound"
 
@@ -34,14 +34,14 @@ const Result = ({
       ) : (
         <CricleXmark className="aspect-square max-h-60 w-full" />
       )}
-      <h2 className="mt-1 text-4xl font-bold text-white drop-shadow-lg">
+      <h2 className="mt-1 text-2xl font-bold text-white drop-shadow-lg sm:text-4xl">
         {message}
       </h2>
-      <p className="mt-1 text-xl font-bold text-white drop-shadow-lg">
+      <p className="mt-1 text-base font-bold text-white drop-shadow-lg sm:text-xl">
         {`You are top ${rank}${aheadOfMe ? `, behind ${aheadOfMe}` : ""}`}
       </p>
       {correct && (
-        <span className="mt-2 rounded bg-black/40 px-4 py-2 text-2xl font-bold text-white drop-shadow-lg">
+        <span className="mt-2 rounded bg-black/40 px-4 py-2 text-xl font-bold text-white drop-shadow-lg sm:text-2xl">
           +{points}
         </span>
       )}

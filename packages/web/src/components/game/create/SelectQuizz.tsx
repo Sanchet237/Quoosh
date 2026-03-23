@@ -1,5 +1,5 @@
-import { QuizzWithId } from "@rahoot/common/types/game"
-import Button from "@rahoot/web/components/Button"
+import { QuizzWithId } from "@quoosh/common/types/game"
+import Button from "@quoosh/web/components/Button"
 import clsx from "clsx"
 import { useState } from "react"
 import toast from "react-hot-toast"

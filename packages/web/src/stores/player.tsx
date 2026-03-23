@@ -1,9 +1,10 @@
-import { StatusDataMap } from "@rahoot/common/types/game/status"
-import { createStatus, Status } from "@rahoot/web/utils/createStatus"
+import { StatusDataMap } from "@quoosh/common/types/game/status"
+import { createStatus, Status } from "@quoosh/web/utils/createStatus"
 import { create } from "zustand"
 
 type PlayerState = {
   username?: string
+  avatar?: string
   points?: number
 }
 
@@ -15,7 +16,7 @@ type PlayerStore<T> = {
   setGameId: (_gameId: string | null) => void
 
   setPlayer: (_state: PlayerState) => void
-  login: (_gameId: string) => void
+  login: (_gameId: string, _avatar?: string) => void
   join: (_username: string) => void
   updatePoints: (_points: number) => void
 
@@ -36,9 +37,9 @@ export const usePlayerStore = create<PlayerStore<StatusDataMap>>((set) => ({
   setGameId: (gameId) => set({ gameId }),
 
   setPlayer: (player: PlayerState) => set({ player }),
-  login: (username) =>
+  login: (username, avatar) =>
     set((state) => ({
-      player: { ...state.player, username },
+      player: { ...state.player, username, avatar },
     })),
 
   join: (gameId) => {

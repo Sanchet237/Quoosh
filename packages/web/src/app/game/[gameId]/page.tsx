@@ -1,17 +1,18 @@
 "use client"
 
-import { STATUS } from "@rahoot/common/types/game/status"
-import GameWrapper from "@rahoot/web/components/game/GameWrapper"
-import Answers from "@rahoot/web/components/game/states/Answers"
-import Prepared from "@rahoot/web/components/game/states/Prepared"
-import Question from "@rahoot/web/components/game/states/Question"
-import Result from "@rahoot/web/components/game/states/Result"
-import Start from "@rahoot/web/components/game/states/Start"
-import Wait from "@rahoot/web/components/game/states/Wait"
-import { useEvent, useSocket } from "@rahoot/web/contexts/socketProvider"
-import { usePlayerStore } from "@rahoot/web/stores/player"
-import { useQuestionStore } from "@rahoot/web/stores/question"
-import { GAME_STATE_COMPONENTS } from "@rahoot/web/utils/constants"
+import { STATUS } from "@quoosh/common/types/game/status"
+import GameWrapper from "@quoosh/web/components/game/GameWrapper"
+import Answers from "@quoosh/web/components/game/states/Answers"
+import Podium from "@quoosh/web/components/game/states/Podium"
+import Prepared from "@quoosh/web/components/game/states/Prepared"
+import Question from "@quoosh/web/components/game/states/Question"
+import Result from "@quoosh/web/components/game/states/Result"
+import Start from "@quoosh/web/components/game/states/Start"
+import Wait from "@quoosh/web/components/game/states/Wait"
+import { useEvent, useSocket } from "@quoosh/web/contexts/socketProvider"
+import { usePlayerStore } from "@quoosh/web/stores/player"
+import { useQuestionStore } from "@quoosh/web/stores/question"
+import { GAME_STATE_COMPONENTS } from "@quoosh/web/utils/constants"
 import { useParams, useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 
@@ -39,19 +40,20 @@ const Game = () => {
   )
 
   useEvent("game:status", ({ name, data }) => {
-    if (name in GAME_STATE_COMPONENTS) {
+    if (name in GAME_STATE_COMPONENTS || name === STATUS.FINISHED) {
       setStatus(name, data)
     }
   })
 
   useEvent("game:reset", (message) => {
-    router.replace("/")
+    router.replace("/play")
     reset()
     setQuestionStates(null)
     toast.error(message)
   })
 
   if (!gameIdParam) {
+    router.replace("/play")
     return null
   }
 
@@ -85,6 +87,11 @@ const Game = () => {
 
     case STATUS.SELECT_ANSWER:
       component = <Answers data={status.data} />
+
+      break
+
+    case STATUS.FINISHED:
+      component = <Podium data={status.data} onGoHome={() => router.push("/")} />
 
       break
   }

@@ -209,3 +209,353 @@ button:not(:disabled),
     transform: scale(1);
   }
 }
+
+/* ── Landing page animations ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatCard {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes timerShrink {
+  from {
+    width: 85%;
+  }
+  to {
+    width: 20%;
+  }
+}
+
+.hero-badge {
+  animation: fadeUp 0.5s 0.1s ease both;
+}
+.hero-h1 {
+  animation: fadeUp 0.5s 0.2s ease both;
+}
+.hero-sub {
+  animation: fadeUp 0.5s 0.35s ease both;
+}
+.hero-btns {
+  animation: fadeUp 0.5s 0.45s ease both;
+}
+.hero-card {
+  animation: fadeUp 0.6s 0.55s ease both;
+}
+.card-float {
+  animation: floatCard 4s ease-in-out infinite;
+}
+
+.reveal-card {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+.reveal-card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #f5a000;
+  border-radius: 2px;
+  transition: width 0.25s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.step-dash {
+  stroke-dasharray: 6 4;
+  animation: dashMove 0.8s linear infinite;
+}
+
+/* ── Support section floating shapes ── */
+.shape-float {
+  animation: shape-float-anim 3s ease-in-out infinite alternate;
+}
+
+@keyframes shape-float-anim {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-14px);
+  }
+}
+
+/* legacy alias */
+.support-diamond {
+  animation: shape-float-anim 3s ease-in-out infinite alternate;
+}
+
+/* ══════════════════════════════════════════
+   Retro Hand-Drawn Card
+══════════════════════════════════════════ */
+.retro-card {
+  background: #fffdf8;
+  border: 2px solid #222;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  position: relative;
+  box-shadow: 4px 4px 0 #000;
+  font-family: "Noto Sans JP", Arial, sans-serif;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.retro-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 #000;
+}
+
+/* Paper texture */
+.retro-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.05) 0px,
+    rgba(0, 0, 0, 0.05) 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  opacity: 0.25;
+  z-index: 0;
+}
+
+/* Retro scanline */
+.retro-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 3px
+  );
+  pointer-events: none;
+  animation: retro-scanline 2s linear infinite;
+  z-index: 0;
+}
+
+@keyframes retro-scanline {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Retro icon circle */
+.retro-icon {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  border: 2px solid #111;
+  background: #fdfaf4;
+  box-shadow:
+    inset -2px -2px 0 #111,
+    2px 2px 0 #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition:
+    transform 0.25s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.retro-card:hover .retro-icon {
+  transform: rotate(5deg);
+  background: #ffe0e0;
+  border-color: #d11111;
+  box-shadow:
+    inset -2px -2px 0 #d11111,
+    2px 2px 0 #111;
+}
+
+/* Title */
+.retro-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #111;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+  position: relative;
+  z-index: 1;
+  line-height: 1.3;
+}
+
+.retro-card:hover .retro-title {
+  animation: retro-jitter 0.3s infinite alternate;
+  color: #d11111;
+  text-shadow: 1px 1px 0 #700000;
+}
+
+/* ══════════════════════════════════════════
+   Mobile Responsiveness (480px and below)
+══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* Prevent horizontal scroll */
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Mobile-friendly font scaling */
+  h1 {
+    word-spacing: normal;
+  }
+
+  /* Ensure buttons don't overflow */
+  button,
+  a[role="button"] {
+    max-width: 100%;
+  }
+
+  /* Reduce shadow on small screens for better performance */
+  .retro-card {
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  /* Smaller padding for form components on mobile */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevent iOS zoom on input focus */
+  }
+}
+
+/* ══════════════════════════════════════════
+   Tablet Responsiveness (481px - 768px)
+══════════════════════════════════════════ */
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Optimize retro card shadows for tablet */
+  .retro-card {
+    box-shadow: 3px 3px 0 #000;
+  }
+}
+
+@keyframes retro-jitter {
+  from {
+    transform: rotate(-1deg) translateX(-1px);
+  }
+  to {
+    transform: rotate(1deg) translateX(1px);
+  }
+}
+
+/* Description */
+.retro-desc {
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: #555;
+  position: relative;
+  z-index: 1;
+}
+
+/* CTA link inside retro card */
+.retro-cta {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.25rem;
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #111;
+  border: 2px solid #111;
+  border-radius: 0.3rem;
+  background: #fdfaf4;
+  box-shadow: 2px 2px 0 #000;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.retro-cta:hover {
+  background: #ffe0e0;
+  color: #d11111;
+  border-color: #d11111;
+  box-shadow: 3px 3px 0 #700000;
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   Accessibility: Respect user's reduced motion preference
+   Covers all animations and transitions app-wide
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

@@ -1,8 +1,8 @@
-import Button from "@rahoot/web/components/Button"
-import Form from "@rahoot/web/components/Form"
-import Input from "@rahoot/web/components/Input"
-import { useEvent, useSocket } from "@rahoot/web/contexts/socketProvider"
-import { usePlayerStore } from "@rahoot/web/stores/player"
+import Button from "@quoosh/web/components/Button"
+import Form from "@quoosh/web/components/Form"
+import Input from "@quoosh/web/components/Input"
+import { useEvent, useSocket } from "@quoosh/web/contexts/socketProvider"
+import { usePlayerStore } from "@quoosh/web/stores/player"
 import { useSearchParams } from "next/navigation"
 import { KeyboardEvent, useEffect, useRef, useState } from "react"
 
@@ -40,12 +40,15 @@ const Room = () => {
 
   return (
     <Form>
+      <h2 className="text-center text-lg font-black tracking-tight text-gray-800 sm:text-xl">
+        Enter Game PIN
+      </h2>
       <Input
         onChange={(e) => setInvitation(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="PIN Code here"
       />
-      <Button onClick={handleJoin}>Submit</Button>
+      <Button onClick={handleJoin}>Join Game</Button>
     </Form>
   )
 }

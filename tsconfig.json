@@ -5,9 +5,9 @@
     "noErrorTruncation": true,
     "esModuleInterop": true,
     "paths": {
-      "@rahoot/common/*": ["./packages/common/src/*"],
-      "@rahoot/socket/*": ["./packages/socket/src/*"],
-      "@rahoot/web/*": ["./packages/web/src/*"]
+      "@quoosh/common/*": ["./packages/common/src/*"],
+      "@quoosh/socket/*": ["./packages/socket/src/*"],
+      "@quoosh/web/*": ["./packages/web/src/*"]
     },
     "strict": true,
     "strictNullChecks": true

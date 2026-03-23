@@ -1,22 +1,22 @@
 <p align="center">
-  <img width="450" height="120" align="center" src="https://raw.githubusercontent.com/Ralex91/Rahoot/main/.github/logo.svg">
+  <img width="450" height="120" align="center" src="https://raw.githubusercontent.com/Ralex91/Quoosh/main/.github/logo.svg">
   <br>
   <div align="center">
-    <img alt="Visitor Badge" src="https://api.visitorbadge.io/api/visitors?path=https://github.com/Ralex91/Rahoot/edit/main/README.md&countColor=%2337d67a">
-    <img src="https://img.shields.io/docker/pulls/ralex91/rahoot?style=for-the-badge&color=37d67a" alt="Docker Pulls">
+    <img alt="Visitor Badge" src="https://api.visitorbadge.io/api/visitors?path=https://github.com/Ralex91/Quoosh/edit/main/README.md&countColor=%2337d67a">
+    <img src="https://img.shields.io/docker/pulls/ralex91/Quoosh?style=for-the-badge&color=37d67a" alt="Docker Pulls">
   </div>
 </p>
 
 ## 🧩 What is this project?
 
-Rahoot is a straightforward and open-source clone of the Kahoot! platform, allowing users to host it on their own server for smaller events.
+Quoosh is a straightforward and open-source clone of the Kahoot! platform, allowing users to host it on their own server for smaller events.
 
-> ⚠️ This project is still under development, please report any bugs or suggestions in the [issues](https://github.com/Ralex91/Rahoot/issues)
+> ⚠️ This project is still under development, please report any bugs or suggestions in the [issues](https://github.com/Ralex91/Quoosh/issues)
 
 <p align="center">
-  <img width="30%" src="https://raw.githubusercontent.com/Ralex91/Rahoot/main/.github/preview1.jpg" alt="Login">
-  <img width="30%" src="https://raw.githubusercontent.com/Ralex91/Rahoot/main/.github/preview2.jpg" alt="Manager Dashboard">
-  <img width="30%" src="https://raw.githubusercontent.com/Ralex91/Rahoot/main/.github/preview3.jpg" alt="Question Screen">
+  <img width="30%" src="https://raw.githubusercontent.com/Ralex91/Quoosh/main/.github/preview1.jpg" alt="Login">
+  <img width="30%" src="https://raw.githubusercontent.com/Ralex91/Quoosh/main/.github/preview2.jpg" alt="Manager Dashboard">
+  <img width="30%" src="https://raw.githubusercontent.com/Ralex91/Quoosh/main/.github/preview3.jpg" alt="Question Screen">
 </p>
 
 ## ⚙️ Prerequisites
@@ -28,77 +28,51 @@ Choose one of the following deployment methods:
 - Node.js : version 20 or higher
 - PNPM : Learn more about [here](https://pnpm.io/)
 
-### With Docker
+## 📖 Getting Started (Local)
 
-- Docker and Docker Compose
-
-## 📖 Getting Started
-
-Choose your deployment method:
-
-### 🐳 Using Docker (Recommended)
-
-Using Docker Compose (recommended):
-You can find the docker compose configuration in the repository:
-[docker-compose.yml](/compose.yml)
-
-```bash
-docker compose up -d
-```
-
-Or using Docker directly:
-
-```bash
-docker run -d \
-  -p 3000:3000 \
-  -p 3001:3001 \
-  -v ./config:/app/config \
-  -e WEB_ORIGIN=http://localhost:3000 \
-  -e SOCKET_URL=http://localhost:3001 \
-  ralex91/rahoot:latest
-```
-
-**Configuration Volume:**
-The `-v ./config:/app/config` option mounts a local `config` folder to persist your game settings and quizzes. This allows you to:
-
-- Edit your configuration files directly on your host machine
-- Keep your settings when updating the container
-- Easily backup your quizzes and game configuration
-
-The folder will be created automatically on first run with an example quiz to get you started.
-
-The application will be available at:
-
-- Web Interface: http://localhost:3000
-- WebSocket Server: ws://localhost:3001
-
-### 🛠️ Without Docker
+Follow these steps to run Quoosh locally without Docker.
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/Ralex91/Rahoot.git
-cd ./Rahoot
+git clone https://github.com/Ralex91/Quoosh.git
+cd Quoosh
 ```
 
-2. Install dependencies:
+2. Install dependencies (from repo root):
 
 ```bash
 pnpm install
 ```
 
-3. Change the environment variables in the `.env` file
+3. Ensure you have a `.env` file at the repo root with these values (defaults):
 
-4. Build and start the application:
+```
+WEB_ORIGIN=http://localhost:3000
+SOCKET_URL=http://localhost:3001
+```
+
+4. Start both services in development (web + socket):
 
 ```bash
-# Development mode
-pnpm run dev
+pnpm dev
+```
 
-# Production mode
+4b. Or start services individually:
+
+```bash
+pnpm run dev:web
+pnpm run dev:socket
+```
+
+5. Build and run for production:
+
+```bash
 pnpm run build
 pnpm start
 ```
+
+The app will be available at http://localhost:3000 and the socket server at http://localhost:3001.
 
 ## ⚙️ Configuration
 
@@ -169,8 +143,8 @@ Quiz Options:
 4. Create a pull request
 5. Wait for review and merge
 
-For bug reports or feature requests, please [create an issue](https://github.com/Ralex91/Rahoot/issues).
+For bug reports or feature requests, please [create an issue](https://github.com/Ralex91/Quoosh/issues).
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Ralex91/Rahoot&type=date&legend=bottom-right)](https://www.star-history.com/#Ralex91/Rahoot&type=date&legend=bottom-right)
+[![Star History Chart](https://api.star-history.com/svg?repos=Ralex91/Quoosh&type=date&legend=bottom-right)](https://www.star-history.com/#Ralex91/Quoosh&type=date&legend=bottom-right)

@@ -1,44 +1,66 @@
 "use client"
 
-import logo from "@rahoot/web/assets/logo.svg"
-import Loader from "@rahoot/web/components/Loader"
-import { useSocket } from "@rahoot/web/contexts/socketProvider"
+import background from "@quoosh/web/assets/background.webp"
+import Loader from "@quoosh/web/components/Loader"
+import { useSocket } from "@quoosh/web/contexts/socketProvider"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { PropsWithChildren, useEffect } from "react"
 
 const AuthLayout = ({ children }: PropsWithChildren) => {
   const { isConnected, connect } = useSocket()
+  const pathname = usePathname()
+  const isLanding = pathname === "/"
+
   useEffect(() => {
-    if (!isConnected) {
+    if (!isConnected && !isLanding) {
       connect()
     }
-  }, [connect, isConnected])
+  }, [connect, isConnected, isLanding])
 
-  if (!isConnected) {
+  if (!isLanding && !isConnected) {
     return (
-      <section className="relative flex min-h-dvh flex-col items-center justify-center">
-        <div className="absolute h-full w-full overflow-hidden">
-          <div className="bg-primary/15 absolute -top-[15vmin] -left-[15vmin] min-h-[75vmin] min-w-[75vmin] rounded-full"></div>
-          <div className="bg-primary/15 absolute -right-[15vmin] -bottom-[15vmin] min-h-[75vmin] min-w-[75vmin] rotate-45"></div>
+      <section className="relative flex min-h-dvh flex-col items-center justify-center px-4 py-8 sm:py-12">
+        {/* Classroom background */}
+        <div className="fixed top-0 left-0 -z-10 h-full w-full bg-orange-600">
+          <Image
+            className="pointer-events-none h-full w-full object-cover opacity-50"
+            src={background}
+            alt="background"
+          />
+          <div
+            className="absolute inset-0"
+            style={{ background: "rgba(15,23,42,0.55)" }}
+          />
         </div>
 
-        <Image src={logo} className="mb-6 h-32" alt="logo" />
         <Loader className="h-23" />
-        <h2 className="mt-2 text-center text-2xl font-bold text-white drop-shadow-lg md:text-3xl">
+        <h2 className="mt-2 text-center text-xl font-bold text-white drop-shadow-lg sm:text-2xl md:text-3xl">
           Loading...
         </h2>
       </section>
     )
   }
 
+  if (isLanding) {
+    return <>{children}</>
+  }
+
   return (
-    <section className="relative flex min-h-dvh flex-col items-center justify-center">
-      <div className="absolute h-full w-full overflow-hidden">
-        <div className="bg-primary/15 absolute -top-[15vmin] -left-[15vmin] min-h-[75vmin] min-w-[75vmin] rounded-full"></div>
-        <div className="bg-primary/15 absolute -right-[15vmin] -bottom-[15vmin] min-h-[75vmin] min-w-[75vmin] rotate-45"></div>
+    <section className="relative flex min-h-dvh flex-col items-center justify-center px-4 py-8 sm:py-12">
+      {/* Classroom background */}
+      <div className="fixed top-0 left-0 -z-10 h-full w-full bg-orange-600">
+        <Image
+          className="pointer-events-none h-full w-full object-cover opacity-50"
+          src={background}
+          alt="background"
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: "rgba(15,23,42,0.55)" }}
+        />
       </div>
 
-      <Image src={logo} className="mb-6 h-32" alt="logo" />
       {children}
     </section>
   )

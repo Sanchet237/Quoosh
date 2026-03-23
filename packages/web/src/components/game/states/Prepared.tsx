@@ -1,5 +1,5 @@
-import { CommonStatusDataMap } from "@rahoot/common/types/game/status"
-import { ANSWERS_COLORS, ANSWERS_ICONS } from "@rahoot/web/utils/constants"
+import { CommonStatusDataMap } from "@quoosh/common/types/game/status"
+import { ANSWERS_COLORS, ANSWERS_ICONS } from "@quoosh/web/utils/constants"
 import clsx from "clsx"
 import { createElement } from "react"
 

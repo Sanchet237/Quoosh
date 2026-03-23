@@ -1,0 +1,138 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  HOST
+  ADMIN
+}
+
+enum QuizStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String
+  password     String?
+  role         Role          @default(HOST)
+  suspended    Boolean       @default(false)
+  quizzes      Quiz[]
+  sessions     QuizSession[]
+  announcements Announcement[]
+  createdAt    DateTime      @default(now())
+}
+
+model Quiz {
+  id        String        @id @default(cuid())
+  title     String
+  subject   String
+  status    QuizStatus    @default(APPROVED)
+  creatorId String
+  creator   User          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  questions Question[]
+  sessions  QuizSession[]
+  reports   Report[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Question {
+  id            String         @id @default(cuid())
+  quizId        String
+  quiz          Quiz           @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  text          String
+  image         String?
+  answers       String[]
+  solution      Int
+  time          Int            @default(20)
+  cooldown      Int            @default(5)
+  order         Int
+  playerAnswers PlayerAnswer[]
+}
+
+// Persisted record of each live quiz session
+model QuizSession {
+  id            String         @id @default(cuid())
+  inviteCode    String         @unique
+  hostId        String
+  host          User           @relation(fields: [hostId], references: [id])
+  quizId        String
+  quiz          Quiz           @relation(fields: [quizId], references: [id])
+  playerSessions PlayerSession[]
+  playerAnswers  PlayerAnswer[]
+  startedAt     DateTime       @default(now())
+  endedAt       DateTime?
+  terminated    Boolean        @default(false)
+}
+
+// One row per player per session
+model PlayerSession {
+  id         String      @id @default(cuid())
+  sessionId  String
+  session    QuizSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  nickname   String
+  avatar     String?
+  score      Int         @default(0)
+  answers    PlayerAnswer[]
+  joinedAt   DateTime    @default(now())
+}
+
+// Individual answer record
+model PlayerAnswer {
+  id              String        @id @default(cuid())
+  sessionId       String
+  session         QuizSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  playerSessionId String
+  player          PlayerSession @relation(fields: [playerSessionId], references: [id], onDelete: Cascade)
+  questionId      String
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answerId        Int
+  correct         Boolean
+  points          Int
+  answeredAt      DateTime      @default(now())
+}
+
+// Content moderation reports
+model Report {
+  id          String       @id @default(cuid())
+  quizId      String
+  quiz        Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  reason      String
+  reportedBy  String       // nickname or "anonymous"
+  status      ReportStatus @default(OPEN)
+  adminNote   String?
+  createdAt   DateTime     @default(now())
+  resolvedAt  DateTime?
+}
+
+// Admin announcements sent to hosts
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  sentBy    String
+  admin     User     @relation(fields: [sentBy], references: [id])
+  createdAt DateTime @default(now())
+}
+
+// Global platform configuration key-value store
+model PlatformSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

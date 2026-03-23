@@ -1,4 +1,4 @@
-import { QuizzWithId } from "@rahoot/common/types/game"
+import { QuizzWithId } from "@quoosh/common/types/game"
 import fs from "fs"
 import { resolve } from "path"
 

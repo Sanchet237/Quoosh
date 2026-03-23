@@ -1,7 +1,7 @@
-import Button from "@rahoot/web/components/Button"
-import Form from "@rahoot/web/components/Form"
-import Input from "@rahoot/web/components/Input"
-import { useEvent } from "@rahoot/web/contexts/socketProvider"
+import Button from "@quoosh/web/components/Button"
+import Form from "@quoosh/web/components/Form"
+import Input from "@quoosh/web/components/Input"
+import { useEvent } from "@quoosh/web/contexts/socketProvider"
 import { KeyboardEvent, useState } from "react"
 import toast from "react-hot-toast"
 
@@ -28,13 +28,16 @@ const ManagerPassword = ({ onSubmit }: Props) => {
 
   return (
     <Form>
+      <h2 className="text-center text-xl font-black tracking-tight text-gray-800">
+        Manager Access
+      </h2>
       <Input
         type="password"
         onChange={(e) => setPassword(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Manager password"
       />
-      <Button onClick={handleSubmit}>Submit</Button>
+      <Button onClick={handleSubmit}>Enter</Button>
     </Form>
   )
 }

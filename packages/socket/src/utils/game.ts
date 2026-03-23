@@ -1,6 +1,6 @@
-import { Socket } from "@rahoot/common/types/game/socket"
-import Game from "@rahoot/socket/services/game"
-import Registry from "@rahoot/socket/services/registry"
+import { Socket } from "@quoosh/common/types/game/socket"
+import Game from "@quoosh/socket/services/game"
+import Registry from "@quoosh/socket/services/registry"
 
 export const withGame = (
   gameId: string | undefined,
