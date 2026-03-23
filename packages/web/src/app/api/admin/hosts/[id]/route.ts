@@ -80,7 +80,7 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     where: { hostId: id },
     select: { id: true },
   })
-  const sessionIds = sessions.map((s) => s.id)
+  const sessionIds = sessions.map((s: { id: string }) => s.id)
 
   if (sessionIds.length > 0) {
     // 2. Delete player answers (cascade target from quizSession)
