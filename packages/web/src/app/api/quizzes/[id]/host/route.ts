@@ -1,5 +1,6 @@
 import { auth } from "@quoosh/web/lib/auth"
 import { prisma } from "@quoosh/web/lib/db"
+import { resolveImageUrl } from "@quoosh/web/utils/image"
 import { NextResponse } from "next/server"
 
 export async function POST(
@@ -39,7 +40,7 @@ export async function POST(
       questions: quiz.questions.map((q: any) => ({
         question: q.text,
         answers: q.answers,
-        image: q.image ?? undefined,
+        image: resolveImageUrl(q.image) || undefined,
       })),
     }
 

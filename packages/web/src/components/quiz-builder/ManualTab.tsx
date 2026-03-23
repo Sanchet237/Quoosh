@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { resolveImageUrl } from "@quoosh/web/utils/image"
 import { Plus, Trash2 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -40,6 +41,7 @@ const UNSELECTED_COLORS = [
 
 export default function ManualTab({ initialData, onSave, isSaving }: ManualTabProps) {
   const [imageMode, setImageMode] = useState<"url" | "upload">("url")
+  const [previewLoadFailed, setPreviewLoadFailed] = useState(false)
   
   const {
     register,
@@ -53,7 +55,7 @@ export default function ManualTab({ initialData, onSave, isSaving }: ManualTabPr
     resolver: zodResolver(questionSchema),
     defaultValues: {
       text: initialData?.text || "",
-      image: initialData?.image || "",
+      image: resolveImageUrl(initialData?.image || ""),
       answers: initialData?.answers || ["", ""],
       solution: initialData?.solution ?? 0,
       time: initialData?.time || 20,
@@ -71,7 +73,7 @@ export default function ManualTab({ initialData, onSave, isSaving }: ManualTabPr
     if (initialData) {
       reset({
         text: initialData.text || "",
-        image: initialData.image || "",
+        image: resolveImageUrl(initialData.image || ""),
         answers: initialData.answers || ["", ""],
         solution: initialData.solution ?? 0,
         time: initialData.time || 20,
@@ -82,6 +84,14 @@ export default function ManualTab({ initialData, onSave, isSaving }: ManualTabPr
 
   // Watch values for auto-save debouncing
   const formValues = watch()
+  const previewImageUrl = resolveImageUrl(formValues.image)
+  const imageField = register("image", {
+    setValueAs: (value) => resolveImageUrl(value),
+  })
+
+  useEffect(() => {
+    setPreviewLoadFailed(false)
+  }, [previewImageUrl])
 
   // Keep a stable ref to onSave so it doesn't re-trigger the effect when the
   // parent re-renders and creates a new function reference.
@@ -155,7 +165,7 @@ export default function ManualTab({ initialData, onSave, isSaving }: ManualTabPr
             
           {imageMode === "url" ? (
             <input
-              {...register("image")}
+              {...imageField}
               type="text"
               placeholder="https://example.com/image.png"
               className="w-full bg-white border border-gray-300 rounded-lg text-black placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 px-4 py-2.5 outline-none transition-colors"
@@ -181,9 +191,20 @@ export default function ManualTab({ initialData, onSave, isSaving }: ManualTabPr
           {errors.image && <p className="text-red-500 font-bold text-xs mt-1">Invalid URL</p>}
           
           {/* Thumbnail Preview */}
-          {formValues.image && (
+          {previewImageUrl && (
             <div className="mt-3">
-              <img src={formValues.image} alt="Preview" className="h-24 object-contain rounded border border-gray-200 bg-gray-50" />
+              <img
+                src={previewImageUrl}
+                alt="Preview"
+                className="h-24 object-contain rounded border border-gray-200 bg-gray-50"
+                onLoad={() => setPreviewLoadFailed(false)}
+                onError={() => setPreviewLoadFailed(true)}
+              />
+              {previewLoadFailed && (
+                <p className="text-xs font-bold text-amber-600 mt-2">
+                  Could not load this link. Use a direct image URL (jpg/png/webp) instead of a webpage URL.
+                </p>
+              )}
             </div>
           )}
         </div>

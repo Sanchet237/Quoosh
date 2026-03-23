@@ -1,5 +1,6 @@
 import { auth } from "@quoosh/web/lib/auth"
 import { prisma } from "@quoosh/web/lib/db"
+import { normalizeImageForStorage } from "@quoosh/web/utils/image"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
@@ -97,7 +98,7 @@ export async function PATCH(
             data: questions.map((q, index) => ({
               quizId: id,
               text: q.text,
-              image: q.image ?? null,
+              image: normalizeImageForStorage(q.image),
               answers: q.answers,
               solution: q.solution,
               time: q.time,

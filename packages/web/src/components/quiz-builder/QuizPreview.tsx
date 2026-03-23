@@ -1,6 +1,7 @@
 "use client"
 
 import bgImage from "@quoosh/web/assets/background.webp"
+import { resolveImageUrl } from "@quoosh/web/utils/image"
 
 type QuestionPreviewProps = {
   text: string
@@ -24,6 +25,7 @@ export default function QuizPreview({
 }: QuestionPreviewProps) {
   // Ensure we always have exactly 4 blocks in the preview grid for styling consistency
   const gridAnswers = [...answers, ...Array(Math.max(0, 4 - answers.length)).fill("")]
+  const resolvedImage = resolveImageUrl(image)
 
   return (
     <div className="bg-transparent rounded-xl p-0 sticky top-6">
@@ -49,9 +51,9 @@ export default function QuizPreview({
 
         {/* Center / Image & Time */}
         <div className="flex-1 flex items-center justify-center p-4 relative">
-          {image ? (
+          {resolvedImage ? (
             <img 
-              src={image} 
+              src={resolvedImage} 
               alt="Question media" 
               className="max-h-full max-w-full object-contain rounded drop-shadow-lg"
               onError={(e) => (e.currentTarget.style.display = 'none')}
