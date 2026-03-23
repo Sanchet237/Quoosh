@@ -26,8 +26,7 @@ export default function AdminSessionsPage() {
 
   // Connect to admin socket namespace
   useEffect(() => {
-    const socketUrl =
-      process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:3001"
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL!
     // Must match socket server ADMIN_SOCKET_SECRET (see root .env.example)
     const secret =
       process.env.NEXT_PUBLIC_ADMIN_SOCKET_SECRET ?? "change-me-admin-secret"

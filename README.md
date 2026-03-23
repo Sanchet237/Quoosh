@@ -49,7 +49,8 @@ pnpm install
 
 ```
 WEB_ORIGIN=http://localhost:3000
-SOCKET_URL=http://localhost:3001
+SOCKET_URL=http://<SOCKET_HOST>:3001
+NEXT_PUBLIC_SOCKET_URL=http://<SOCKET_HOST>:3001
 ```
 
 4. Start both services in development (web + socket):
@@ -72,7 +73,7 @@ pnpm run build
 pnpm start
 ```
 
-The app will be available at http://localhost:3000 and the socket server at http://localhost:3001.
+The app will be available at http://localhost:3000 and the socket server at your configured `SOCKET_URL`.
 
 ## ⚙️ Configuration
 

@@ -79,9 +79,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     const initSocket = async () => {
       try {
-        const { webUrl, socketUrl } = await getSocketServer()
+        const { webUrl } = await getSocketServer()
 
-        s = io(socketUrl, {
+        s = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
           autoConnect: false,
           auth: { clientId },
         })

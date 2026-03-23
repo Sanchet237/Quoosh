@@ -4,12 +4,12 @@ import { z } from "zod"
 const env = createEnv({
   server: {
     WEB_ORIGIN: z.string().default("http://localhost:3000"),
-    SOCKET_URL: z.string().default("http://localhost:3001"),
+    SOCKET_URL: z.string(),
     CONTACT_EMAIL: z.string().email().optional(),
   },
 
   client: {
-    NEXT_PUBLIC_SOCKET_URL: z.string().default("http://localhost:3001"),
+    NEXT_PUBLIC_SOCKET_URL: z.string(),
     NEXT_PUBLIC_ADMIN_SOCKET_SECRET: z.string().default(""),
   },
 
