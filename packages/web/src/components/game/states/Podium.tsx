@@ -106,7 +106,7 @@ const Podium = ({ data: { subject, top }, onGoHome }: Props) => {
       {onGoHome && (
         <div
           className={clsx(
-            "fixed bottom-8 left-1/2 z-50 -translate-x-1/2 opacity-0 transition-all duration-700",
+            "fixed bottom-24 left-1/2 z-50 -translate-x-1/2 opacity-0 transition-all duration-700 sm:bottom-8",
             { "opacity-100": apparition >= 4 },
           )}
         >
