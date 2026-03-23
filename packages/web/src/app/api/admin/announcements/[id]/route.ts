@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { requireAdmin } from "@quoosh/web/lib/adminGuard"
-import { db } from "@quoosh/web/lib/db"
+import { prisma } from "@quoosh/web/lib/db"
 import { NextRequest, NextResponse } from "next/server"
 
 type Params = { params: Promise<{ id: string }> }
@@ -15,7 +15,7 @@ export async function DELETE(
   const { id } = await params
 
   try {
-    await db.announcement.delete({ where: { id } })
+    await prisma.announcement.delete({ where: { id } })
     return new NextResponse(null, { status: 204 })
   } catch (e) {
     if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
