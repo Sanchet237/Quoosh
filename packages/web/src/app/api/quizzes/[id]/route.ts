@@ -79,7 +79,7 @@ export async function PATCH(
     const { title, subject, questions } = parsed.data
 
     // All updates in one atomic transaction
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       if (title || subject) {
         await tx.quiz.update({
           where: { id },
