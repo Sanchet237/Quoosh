@@ -36,13 +36,10 @@ export async function POST(
     // Convert to Quoosh JSON format for the socket engine
     const quizzData = {
       subject: quiz.title,
-      quiz.questions.map((q: any) => ({
+      questions: quiz.questions.map((q: any) => ({
         question: q.text,
         answers: q.answers,
         image: q.image ?? undefined,
-        solution: q.solution,
-        time: q.time,
-        cooldown: q.cooldown,
       })),
     }
 
