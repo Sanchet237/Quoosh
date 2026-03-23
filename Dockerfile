@@ -1,5 +1,6 @@
 # Quoosh — multi-stage build (web + socket targets)
 FROM node:20-alpine AS base
+RUN apk add --no-cache openssl
 RUN corepack enable && corepack prepare pnpm@9 --activate
 WORKDIR /app
 
@@ -16,12 +17,15 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV RESEND_API_KEY=build_placeholder
+ENV DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder
 RUN pnpm install --frozen-lockfile
 RUN cd packages/web && pnpm exec prisma generate
 RUN pnpm build
 
 # ── Next.js (standalone) ────────────────────────────────────
 FROM node:20-alpine AS web
+RUN apk add --no-cache openssl
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
