@@ -1,26 +1,32 @@
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { requireAdmin } from "@quoosh/web/lib/adminGuard"
-import { prisma } from "@quoosh/web/lib/db"
-import { Prisma } from "@prisma/client"
+import { db } from "@quoosh/web/lib/db"
 import { NextRequest, NextResponse } from "next/server"
 
 type Params = { params: Promise<{ id: string }> }
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
-  const { error } = await requireAdmin()
-  if (error) return error
+export async function DELETE(
+  _req: NextRequest,
+  { params }: Params
+) {
+  const authError = await requireAdmin()
+  if (authError) return authError
 
   const { id } = await params
 
   try {
-    await prisma.announcement.delete({ where: { id } })
+    await db.announcement.delete({ where: { id } })
     return new NextResponse(null, { status: 204 })
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025") {
+    if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
       return NextResponse.json(
         { error: "Announcement not found" },
-        { status: 404 },
+        { status: 404 }
       )
     }
-    throw e
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
 }
