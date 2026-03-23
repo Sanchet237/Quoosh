@@ -1,5 +1,5 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
-import { requireAdmin } from "@quoosh/web/lib/adminGuard"
+import { auth } from "@quoosh/web/lib/auth"
 import { prisma } from "@quoosh/web/lib/db"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -8,9 +8,14 @@ type Params = { params: Promise<{ id: string }> }
 export async function DELETE(
   _req: NextRequest,
   { params }: Params
-) {
-  const authError = await requireAdmin()
-  if (authError) return authError
+): Promise<NextResponse> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 })
+  }
+  if ((session.user as any).role !== "ADMIN") {
+    return new NextResponse("Forbidden", { status: 403 })
+  }
 
   const { id } = await params
 
