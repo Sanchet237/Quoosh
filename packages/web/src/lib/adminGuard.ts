@@ -1,38 +1,32 @@
-import { auth } from "@quoosh/web/lib/auth"
-import { NextResponse } from "next/server"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
+import { requireAdmin } from "@quoosh/web/lib/adminGuard"
+import { prisma } from "@quoosh/web/lib/db"
+import { NextRequest, NextResponse } from "next/server"
 
-/** Returns the admin session or a 401/403 NextResponse. */
-export async function requireAdmin() {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return {
-      error: new NextResponse("Unauthorized", { status: 401 }),
-      session: null,
-    }
-  }
-  if ((session.user as any).role !== "ADMIN") {
-    return {
-      error: new NextResponse("Forbidden", { status: 403 }),
-      session: null,
-    }
-  }
-  return { error: null, session }
-}
+type Params = { params: Promise<{ id: string }> }
 
-/** Returns the host session or a 401/403 NextResponse. */
-export async function requireHost() {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return {
-      error: new NextResponse("Unauthorized", { status: 401 }),
-      session: null,
+export async function DELETE(
+  _req: NextRequest,
+  { params }: Params
+) {
+  const { error } = await requireAdmin()
+  if (error) return error
+
+  const { id } = await params
+
+  try {
+    await prisma.announcement.delete({ where: { id } })
+    return new NextResponse(null, { status: 204 })
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError && e.code === "P2025") {
+      return NextResponse.json(
+        { error: "Announcement not found" },
+        { status: 404 }
+      )
     }
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
   }
-  if ((session.user as any).role !== "HOST") {
-    return {
-      error: new NextResponse("Forbidden", { status: 403 }),
-      session: null,
-    }
-  }
-  return { error: null, session }
 }
