@@ -10,7 +10,7 @@ import {
   SFX_ANSWERS_MUSIC,
   SFX_ANSWERS_SOUND,
 } from "@quoosh/web/utils/constants"
-import { resolveImageUrl } from "@quoosh/web/utils/image"
+import { getRenderableImageSrc } from "@quoosh/web/utils/image"
 import clsx from "clsx"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -29,7 +29,7 @@ const Answers = ({
 
   const [cooldown, setCooldown] = useState(time)
   const [totalAnswer, setTotalAnswer] = useState(0)
-  const resolvedImage = resolveImageUrl(image)
+  const resolvedImage = getRenderableImageSrc(image)
 
   const [sfxPop] = useSound(SFX_ANSWERS_SOUND, {
     volume: 0.1,

@@ -1,7 +1,7 @@
 "use client"
 
 import { CommonStatusDataMap } from "@quoosh/common/types/game/status"
-import { resolveImageUrl } from "@quoosh/web/utils/image"
+import { getRenderableImageSrc } from "@quoosh/web/utils/image"
 import { SFX_SHOW_SOUND } from "@quoosh/web/utils/constants"
 import { useEffect } from "react"
 import useSound from "use-sound"
@@ -12,7 +12,7 @@ type Props = {
 
 const Question = ({ data: { question, image, cooldown } }: Props) => {
   const [sfxShow] = useSound(SFX_SHOW_SOUND, { volume: 0.5 })
-  const resolvedImage = resolveImageUrl(image)
+  const resolvedImage = getRenderableImageSrc(image)
 
   useEffect(() => {
     sfxShow()

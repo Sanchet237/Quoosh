@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { resolveImageUrl } from "@quoosh/web/utils/image"
+import { getRenderableImageSrc, resolveImageUrl } from "@quoosh/web/utils/image"
 import { Plus, Trash2 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -84,7 +84,7 @@ export default function ManualTab({ initialData, onSave, isSaving }: ManualTabPr
 
   // Watch values for auto-save debouncing
   const formValues = watch()
-  const previewImageUrl = resolveImageUrl(formValues.image)
+  const previewImageUrl = getRenderableImageSrc(formValues.image)
   const imageField = register("image", {
     setValueAs: (value) => resolveImageUrl(value),
   })

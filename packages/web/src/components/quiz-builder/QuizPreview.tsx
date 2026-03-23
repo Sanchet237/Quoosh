@@ -1,7 +1,7 @@
 "use client"
 
 import bgImage from "@quoosh/web/assets/background.webp"
-import { resolveImageUrl } from "@quoosh/web/utils/image"
+import { getRenderableImageSrc } from "@quoosh/web/utils/image"
 
 type QuestionPreviewProps = {
   text: string
@@ -25,7 +25,7 @@ export default function QuizPreview({
 }: QuestionPreviewProps) {
   // Ensure we always have exactly 4 blocks in the preview grid for styling consistency
   const gridAnswers = [...answers, ...Array(Math.max(0, 4 - answers.length)).fill("")]
-  const resolvedImage = resolveImageUrl(image)
+  const resolvedImage = getRenderableImageSrc(image)
 
   return (
     <div className="bg-transparent rounded-xl p-0 sticky top-6">
