@@ -1,1 +1,1 @@
-{"build":{"builder":"NIXPACKS","buildCommand":"pnpm --filter @quoosh/socket build"},"deploy":{"startCommand":"node packages/socket/dist/index.cjs","restartPolicyType":"ON_FAILURE"}}
+{"build":{"builder":"DOCKERFILE","dockerfilePath":"Dockerfile","buildCommand":"pnpm --filter @quoosh/socket build"},"deploy":{"startCommand":"node dist/index.cjs","restartPolicyType":"ON_FAILURE"}}
