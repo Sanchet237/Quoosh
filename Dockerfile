@@ -10,6 +10,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/web/package.json packages/web/
 COPY packages/socket/package.json packages/socket/
 COPY packages/common/package.json packages/common/
+COPY packages/web/prisma packages/web/prisma
 RUN pnpm install --frozen-lockfile
 
 # ── Build all packages ─────────────────────────────────────
