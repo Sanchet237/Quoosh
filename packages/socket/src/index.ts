@@ -15,16 +15,20 @@ const logError = (...args: any[]) => { if (isDev) {console.error(...args)} }
 const httpServer = createServer()
 const io: Server = new ServerIO(httpServer, {
   cors: {
-    origin: [env.WEB_ORIGIN],
+    origin: ["https://quoosh.vercel.app", "http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true,
   },
+  // Make sure WebSocket transport is allowed (no transport restriction blocking it).
+  transports: ["websocket", "polling"],
 })
 Config.init()
 
 const registry = Registry.getInstance()
-const port = Number(env.SOCKET_PORT) || 3001
+const PORT = Number(process.env.PORT) || 3001
 
-httpServer.listen(port, () => {
-  log(`Socket server running on port ${port}`)
+httpServer.listen(PORT, () => {
+  log(`Socket server running on port ${PORT}`)
 })
 
 io.on("connection", (socket) => {

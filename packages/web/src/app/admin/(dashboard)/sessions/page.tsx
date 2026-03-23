@@ -15,6 +15,18 @@ type LiveSession = {
   status: string
 }
 
+const getClientId = (): string => {
+  try {
+    const stored = localStorage.getItem("client_id")
+    if (stored) return stored
+    const newId = crypto.randomUUID()
+    localStorage.setItem("client_id", newId)
+    return newId
+  } catch {
+    return crypto.randomUUID()
+  }
+}
+
 export default function AdminSessionsPage() {
   const [sessions, setSessions] = useState<LiveSession[]>([])
   const [connected, setConnected] = useState(false)
@@ -23,6 +35,7 @@ export default function AdminSessionsPage() {
   const [dbPage, setDbPage] = useState(1)
   const [loadingDb, setLoadingDb] = useState(true)
   const socketRef = useRef<Socket | null>(null)
+  const [clientId] = useState<string>(() => getClientId())
 
   // Connect to admin socket namespace
   useEffect(() => {
@@ -32,7 +45,8 @@ export default function AdminSessionsPage() {
       process.env.NEXT_PUBLIC_ADMIN_SOCKET_SECRET ?? "change-me-admin-secret"
 
     const socket = io(`${socketUrl}/admin`, {
-      auth: { secret },
+      transports: ["websocket"],
+      auth: { secret, clientId },
       reconnectionAttempts: 5,
     })
 
@@ -44,7 +58,7 @@ export default function AdminSessionsPage() {
     return () => {
       socket.disconnect()
     }
-  }, [])
+  }, [clientId])
 
   // Fetch DB sessions (historical)
   const fetchDbSessions = (p: number) => {

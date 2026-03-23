@@ -83,6 +83,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
         s = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
           autoConnect: false,
+          transports: ["websocket"],
           auth: { clientId },
         })
 
