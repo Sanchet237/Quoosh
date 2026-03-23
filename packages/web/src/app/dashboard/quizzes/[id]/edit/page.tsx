@@ -83,11 +83,11 @@ export default function EditQuizPage() {
         cleanup()
         return
       }
-      const { filename, managerPassword } = await res.json()
+      const { quiz, managerPassword } = await res.json()
 
       socket.emit("manager:hostDirect", {
         password: managerPassword,
-        quizzId: filename,
+        quiz,
       })
 
       // Timeout — bail out if socket server never responds

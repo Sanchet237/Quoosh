@@ -1,5 +1,5 @@
 import { Server as ServerIO, Socket as SocketIO } from "socket.io"
-import { GameUpdateQuestion, Player, QuizzWithId } from "."
+import { GameUpdateQuestion, Player, Quizz, QuizzWithId } from "."
 import { Status, StatusDataMap } from "./status"
 
 export type Server = ServerIO<ClientToServerEvents, ServerToClientEvents>;
@@ -72,7 +72,7 @@ export interface ClientToServerEvents {
   "manager:auth": (_password: string) => void;
   "manager:hostDirect": (_message: {
     password: string;
-    quizzId: string;
+    quiz: Quizz;
   }) => void;
   "manager:reconnect": (_message: { gameId: string }) => void;
   "manager:kickPlayer": (_message: {

@@ -113,11 +113,11 @@ export default function QuizCard({
         cleanup()
         return
       }
-      const { filename, managerPassword } = await res.json()
+      const { quiz, managerPassword } = await res.json()
 
       socket.emit("manager:hostDirect", {
         password: managerPassword,
-        quizzId: filename,
+        quiz,
       })
 
       // Timeout — if server never responds, stop hanging

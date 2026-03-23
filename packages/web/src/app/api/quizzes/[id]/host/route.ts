@@ -43,10 +43,13 @@ export async function POST(
       })),
     }
 
-    // ✅ RETURN instead of writing file
+    // ✅ ADD THIS LINE
+    const managerPassword = process.env.ADMIN_SOCKET_SECRET || ""
+
     return NextResponse.json({
       success: true,
       quiz: quizData,
+      managerPassword, // 🔥 THIS FIXES YOUR ISSUE
     })
   } catch (error: any) {
     console.error("[QUIZ_HOST]", error)

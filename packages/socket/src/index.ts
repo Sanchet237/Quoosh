@@ -1,7 +1,6 @@
 import { Server } from "@quoosh/common/types/game/socket"
 import { inviteCodeValidator } from "@quoosh/common/validators/auth"
 import env from "@quoosh/socket/env"
-import Config from "@quoosh/socket/services/config"
 import Game from "@quoosh/socket/services/game"
 import Registry from "@quoosh/socket/services/registry"
 import { withGame } from "@quoosh/socket/utils/game"
@@ -22,8 +21,6 @@ const io: Server = new ServerIO(httpServer, {
   // Make sure WebSocket transport is allowed (no transport restriction blocking it).
   transports: ["websocket", "polling"],
 })
-Config.init()
-
 const registry = Registry.getInstance()
 const PORT = Number(process.env.PORT) || 3001
 
@@ -61,60 +58,42 @@ return
   })
 
   socket.on("manager:auth", (password) => {
-    try {
-      const config = Config.game()
-
-      if (password !== config.managerPassword) {
-        socket.emit("manager:errorMessage", "Invalid password")
-
-        
-return
-      }
-
-      socket.emit("manager:quizzList", Config.quizz())
-    } catch (error) {
-      logError("Failed to read game config:", error)
-      socket.emit("manager:errorMessage", "Failed to read game config")
-    }
-  })
-
-  socket.on("game:create", (quizzId) => {
-    const quizzList = Config.quizz()
-    const quizz = quizzList.find((q) => q.id === quizzId)
-
-    if (!quizz) {
-      socket.emit("game:errorMessage", "Quizz not found")
+    if (password !== env.ADMIN_SOCKET_SECRET) {
+      socket.emit("manager:errorMessage", "Invalid password")
 
       
 return
     }
 
-    const game = new Game(io, socket, quizz)
-    registry.addGame(game)
+    // File-based quizzes are removed. Keep event for backward compatibility.
+    socket.emit("manager:quizzList", [])
   })
 
-  socket.on("manager:hostDirect", ({ password, quizzId }) => {
-    try {
-      const config = Config.game()
+  socket.on("game:create", (quizzId) => {
+    void quizzId
+    socket.emit(
+      "game:errorMessage",
+      "Direct JSON hosting is required; file-based quizzes are disabled",
+    )
+  })
 
-      if (password !== config.managerPassword) {
+  socket.on("manager:hostDirect", ({ password, quiz }) => {
+    try {
+      if (password !== env.ADMIN_SOCKET_SECRET) {
         socket.emit("manager:errorMessage", "Invalid password")
 
         
 return
       }
 
-      const quizzList = Config.quizz()
-      const quizz = quizzList.find((q) => q.id === quizzId)
-
-      if (!quizz) {
-        socket.emit("game:errorMessage", "Quizz not found")
+      if (!quiz?.questions?.length) {
+        socket.emit("manager:errorMessage", "Quiz must include questions")
 
         
 return
       }
 
-      const game = new Game(io, socket, quizz)
+      const game = new Game(io, socket, quiz)
       registry.addGame(game)
     } catch (error) {
       logError("Failed to host direct:", error)
