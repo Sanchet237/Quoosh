@@ -26,7 +26,7 @@ const ACCENTS = [
 
 // Shared button base
 const BTN_BASE =
-  "inline-flex items-center justify-center gap-1 py-1.5 px-2.5 font-black italic tracking-widest uppercase " +
+  "inline-flex w-full items-center justify-center gap-1 py-1.5 px-2.5 font-black italic tracking-widest uppercase " +
   "rounded-lg text-xs border-2 select-none transition-all duration-100 " +
   "disabled:opacity-50 disabled:pointer-events-none"
 

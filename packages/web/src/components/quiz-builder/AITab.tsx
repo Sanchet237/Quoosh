@@ -287,10 +287,9 @@ export default function AITab({ onAdd }: AITabProps) {
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="shrink-0 flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-3 sm:px-5 font-bold rounded-lg transition-colors text-sm"
+            className="shrink-0 w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors text-base"
           >
-            <span className="hidden sm:inline">Send ↵</span>
-            <span className="sm:hidden">↵</span>
+            ↵
           </button>
         </form>
         {messages.length > 0 && (
