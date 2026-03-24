@@ -1,0 +1,103 @@
+import { ManagerStatusDataMap } from "@quoosh/common/types/game/status"
+import { getAvatarSrc } from "@quoosh/web/utils/avatars"
+import { AnimatePresence, motion, useSpring, useTransform } from "motion/react"
+import Image from "next/image"
+import { useEffect, useState } from "react"
+
+type Props = {
+  data: ManagerStatusDataMap["SHOW_LEADERBOARD"]
+}
+
+const AnimatedPoints = ({ from, to }: { from: number; to: number }) => {
+  const spring = useSpring(from, { stiffness: 1000, damping: 30 })
+  const display = useTransform(spring, (value) => Math.round(value))
+  const [displayValue, setDisplayValue] = useState(from)
+
+  useEffect(() => {
+    spring.set(to)
+    const unsubscribe = display.on("change", (latest) => {
+      setDisplayValue(latest)
+    })
+
+    return unsubscribe
+  }, [to, spring, display])
+
+  return <span className="drop-shadow-md">{displayValue}</span>
+}
+
+const Leaderboard = ({ data: { oldLeaderboard, leaderboard } }: Props) => {
+  const [displayedLeaderboard, setDisplayedLeaderboard] =
+    useState(oldLeaderboard)
+  const [isAnimating, setIsAnimating] = useState(false)
+
+  useEffect(() => {
+    setDisplayedLeaderboard(oldLeaderboard)
+    setIsAnimating(false)
+
+    const timer = setTimeout(() => {
+      setIsAnimating(true)
+      setDisplayedLeaderboard(leaderboard)
+    }, 1600)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [oldLeaderboard, leaderboard])
+
+  return (
+    <section className="relative mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-2">
+      <h2 className="mb-4 text-3xl font-bold text-white drop-shadow-md sm:mb-6 sm:text-5xl">
+        Leaderboard
+      </h2>
+      <div className="flex w-full flex-col gap-2">
+        <AnimatePresence mode="popLayout">
+          {displayedLeaderboard.map(({ clientId, username, avatar, points }) => (
+            <motion.div
+              key={clientId}
+              layout
+              initial={{ opacity: 0, y: 50 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                y: 50,
+                transition: { duration: 0.2 },
+              }}
+              transition={{
+                layout: {
+                  type: "spring",
+                  stiffness: 350,
+                  damping: 25,
+                },
+              }}
+              className="bg-primary flex w-full items-center justify-between gap-2 rounded-md p-2 text-lg font-bold text-white sm:gap-3 sm:p-3 sm:text-2xl"
+            >
+              <div className="flex items-center gap-3">
+                <Image
+                  src={getAvatarSrc(avatar)}
+                  alt={username}
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 rounded-lg bg-white/20 object-contain p-0.5"
+                />
+                <span className="drop-shadow-md">{username}</span>
+              </div>
+              {isAnimating ? (
+                <AnimatedPoints
+                  from={oldLeaderboard.find((u) => u.clientId === clientId)?.points || 0}
+                  to={leaderboard.find((u) => u.clientId === clientId)?.points || 0}
+                />
+              ) : (
+                <span className="drop-shadow-md">{points}</span>
+              )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    </section>
+  )
+}
+
+export default Leaderboard

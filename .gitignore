@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Environment files - NEVER commit these
+.env
+.env.local
+.env.production
+.env*.local
+**/.env
+**/.env.local
+**/.env.production
+
+# Build outputs
+.next
+**/dist
+**/.next
+**/standalone
+
+# Prisma
+packages/web/prisma/migrations/*.db
+
+# Generated hosted quiz files
+config/quizz/_hosted_*.json
+
+# Secrets
+.secrets
+release.json
+
+# Misc
+.DS_Store
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+
