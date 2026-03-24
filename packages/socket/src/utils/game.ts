@@ -43,9 +43,11 @@ export const timeToPoint = (startTime: number, secondes: number): number => {
 
   const actualTime = Date.now()
   const tempsPasseEnSecondes = (actualTime - startTime) / 1000
-
-  points -= (1000 / secondes) * tempsPasseEnSecondes
+  const pointsLost = (1000 / secondes) * tempsPasseEnSecondes
+  points -= pointsLost
   points = Math.max(0, points)
+
+  console.log(`timeToPoint: startTime=${startTime}, actualTime=${actualTime}, limit=${secondes}s, passed=${tempsPasseEnSecondes.toFixed(2)}s, lost=${pointsLost.toFixed(2)}, final=${points.toFixed(2)}`);
 
   return points
 }

@@ -412,27 +412,33 @@ class Game {
           (a) => a.clientId === player.clientId,
         );
 
-        const isCorrect = playerAnswer
-          ? Number(playerAnswer.answerId) === Number(question.solution)
-          : false;
+        const sol = Number(question.solution);
+        const ans = playerAnswer ? Number(playerAnswer.answerId) : -1;
+        const isCorrect = playerAnswer ? ans === sol : false;
 
         const points =
           playerAnswer && isCorrect ? Math.round(playerAnswer.points) : 0;
 
-        // Ensure we don't double count if showResults is called multiple times
-        // though in the current flow it's not.
-        player.points += points;
+        // Create a new player object with accumulated points
+        const newTotalPoints = (Number(player.points) || 0) + points;
 
-        console.log(`Player ${player.username} points updated: ${player.points} (+${points}), isCorrect: ${isCorrect}`);
+        console.log(
+          `[RESULT] Player: ${player.username}, clientId: ${player.clientId}, ans: ${ans}, sol: ${sol}, isCorrect: ${isCorrect}, roundPoints: ${points}, totalBefore: ${player.points}, totalAfter: ${newTotalPoints}`
+        );
 
-        return { ...player, lastCorrect: isCorrect, lastPoints: points };
+        return {
+          ...player,
+          points: newTotalPoints,
+          lastCorrect: isCorrect,
+          lastPoints: points,
+        };
       })
       .sort((a, b) => {
         if (b.points !== a.points) {
           return b.points - a.points;
         }
 
-        return a.username.localeCompare(b.username); // Tie-breaker
+        return a.username.localeCompare(b.username);
       });
 
     this.players = sortedPlayers;
@@ -477,12 +483,15 @@ class Game {
       return;
     }
 
+    const qPoints = timeToPoint(this.round.startTime, question.time);
     this.round.playersAnswers.push({
       clientId: player.clientId,
       answerId,
-      points: timeToPoint(this.round.startTime, question.time),
+      points: qPoints,
       timestamp: Date.now(),
     });
+
+    console.log(`Player ${player.username} answered ${answerId} (solution: ${question.solution}), points: ${qPoints}`);
 
     // Real-time leaderboard update
     const currentStandings = this.players
@@ -490,19 +499,23 @@ class Game {
         const pAnswer = this.round.playersAnswers.find(
           (a) => a.clientId === p.clientId,
         );
-        const isCorrect = pAnswer ? Number(pAnswer.answerId) === Number(question.solution) : false;
+        const sol = Number(question.solution);
+        const ans = pAnswer ? Number(pAnswer.answerId) : -1;
+        const isCorrect = pAnswer ? ans === sol : false;
         const pPoints = pAnswer && isCorrect ? Math.round(pAnswer.points) : 0;
+        const totalPoints = (Number(p.points) || 0) + pPoints;
 
-        return { ...p, tempPoints: p.points + pPoints };
+        return { ...p, points: totalPoints };
       })
       .sort((a, b) => {
-        if (b.tempPoints !== a.tempPoints) {
-          return b.tempPoints - a.tempPoints;
+        if (b.points !== a.points) {
+          return b.points - a.points;
         }
 
         return a.username.localeCompare(b.username);
-      })
-      .map(({ tempPoints, ...p }) => ({ ...p, points: tempPoints }));
+      });
+
+    console.log(`[STANDINGS] Emitting update for ${this.gameId}. Top player: ${currentStandings[0]?.username} with ${currentStandings[0]?.points} pts`);
 
     this.io.to(this.gameId).emit("game:leaderboard", {
       leaderboard: currentStandings.slice(0, 5),
