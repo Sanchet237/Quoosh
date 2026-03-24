@@ -1,362 +1,483 @@
-# Quoosh
+<div align="center">
 
-A full-stack, real-time quiz platform inspired by Kahoot-style gameplay.
+  <img src="packages/web/src/assets/logo.svg"
+       alt="Quoosh Logo"
+       width="200"
+       style="display:block; margin: 0 auto 6px;" />
 
-Quoosh lets hosts create quizzes (manual, JSON import, or AI-generated), run live sessions over Socket.IO, and let players join instantly with an invite code - no account required.
+  <p style="margin: 0;">
+    <strong>
+      A self-hostable, real-time live quiz platform — 
+      like Kahoot, but <em>yours</em>.
+    </strong>
+  </p>
 
-For a complete architecture and implementation deep dive, see [FULL_PROJECT_EXPLANATION.md](./FULL_PROJECT_EXPLANATION.md).
+</div>
 
-## Table of Contents
+---
+![Quoosh Preview](packages/web/public/Landing.png)
+---
+<div align="center">
 
-- [Overview](#overview)
-- [Core Features](#core-features)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Available Scripts](#available-scripts)
-- [Database and Seed](#database-and-seed)
-- [API Overview](#api-overview)
-- [Socket Events Overview](#socket-events-overview)
-- [Deployment](#deployment)
-- [Security Notes](#security-notes)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+  <h3>
+    🌐 <strong>Try it now →</strong>
+    <a href="https://quoosh.vercel.app"><b>quoosh.vercel.app</b></a>
+  </h3>
 
-## Overview
+</div>
 
-Quoosh is a monorepo project with:
+## 📖 Overview
 
-- `@quoosh/web`: Next.js web app (hosts, players, and admin dashboard)
-- `@quoosh/socket`: Socket.IO real-time game server
-- `@quoosh/common`: shared types and validators
+**Quoosh** is an open-source, browser-based live quiz platform built for classrooms, events, and teams. A **host** creates a quiz, starts a live session, and players join instantly using a 6-character PIN — **no account required for players**.
 
-### User Roles
+Designed to be **self-hosted**: fork it, configure it, and own your data completely.
 
-- **Host**: Registers/login, creates quizzes, starts live sessions from dashboard
-- **Player**: Joins with invite code at `/play`, selects nickname/avatar, plays live
-- **Admin**: Accesses `/admin` dashboard for moderation, session control, settings, and analytics
+### ✨ Key Features
 
-## Core Features
+| Feature | Description |
+|---|---|
+| 🎮 **Real-time Gameplay** | WebSocket-powered with instant score updates and live leaderboards |
+| 🤖 **AI Quiz Generator** | Auto-generate quizzes using Google Gemini |
+| 📥 **JSON Import** | Bulk-add questions from a structured JSON file |
+| 🔐 **Flexible Auth** | Google OAuth + Email/Password via Auth.js |
+| 🧑‍💼 **Admin Panel** | Manage hosts, moderate quizzes, view live sessions, post announcements |
+| 🛡️ **Rate Limiting** | Optional Upstash Redis-backed sliding-window rate limits |
+| 📊 **Session Telemetry** | Per-player, per-question answer tracking in PostgreSQL |
+| 📱 **Fully Responsive** | Seamlessly works on desktop, tablet, and mobile |
+| ⚡ **No Native App** | Everything runs entirely in the browser |
 
-- Real-time multiplayer quiz sessions via Socket.IO
-- Invite-code based room joining
-- Quiz builder with:
-  - Manual editor
-  - JSON import parser
-  - AI question generation (Google Gemini)
-- Question media support:
-  - File upload (data URL)
-  - Remote image URL (with URL normalization and image proxying)
-- Live host controls:
-  - Start/skip/abort flow
-  - Responses and leaderboard phases
-- Final podium with top players
-- Reconnect support for both manager and players
-- Admin operations:
-  - Overview analytics
-  - Host/quiz/player/session management
-  - Session termination
-  - Moderation queue
-  - Announcements
-  - Platform settings
+---
+## 🖼️ UI Preview
 
-## Architecture
+Explore the core experience of **Quoosh** across both host and player perspectives.
 
-### Runtime Flow
+---
 
-1. Host creates/edits quiz in web app.
-2. Host triggers `POST /api/quizzes/:id/host` to build payload for the socket server.
-3. Web emits `manager:hostDirect` with quiz JSON + admin socket secret.
-4. Socket server creates a live game and returns `{ gameId, inviteCode }`.
-5. Players join by invite code and play through synchronized status updates.
-6. Score, responses, leaderboard, and podium are emitted as game states.
+### 🎯 Host Dashboard 
+<p align="center">
+  <img src="packages/web/public/Create Quiz Dash.png" alt="Create Quiz Dashboard" width="700"/>
+</p>
 
-### Monorepo Design
+Create, edit, and manage quizzes effortlessly with a fast, intuitive dashboard designed for full control.
 
-- Shared contracts in `@quoosh/common` keep web and socket in sync.
-- `@quoosh/web` handles auth, persistence, APIs, and UI.
-- `@quoosh/socket` handles in-memory session lifecycle and gameplay orchestration.
+---
 
-## Tech Stack
+### 🔑 Player Join 
+<p align="center">
+  <img src="packages/web/public/Join Game.png" alt="Join Game Screen" width="700" />
+</p>
 
-- **Frontend**: Next.js 16, React 19, Tailwind CSS, Zustand, React Hook Form
-- **Backend APIs**: Next.js App Router route handlers
-- **Realtime**: Socket.IO (dedicated socket package)
-- **Database**: PostgreSQL + Prisma ORM
-- **Auth**: Auth.js (NextAuth v5 beta), Credentials + Google OAuth
-- **AI**: Vercel AI SDK + Google Gemini (`gemini-2.0-flash`)
-- **Infra/Utils**: Docker multi-stage, Docker Compose, Upstash Redis rate limiting, Resend email
+Players can instantly join any quiz using a simple 6-character game PIN — no login required.
 
-## Project Structure
+---
 
-```txt
-.
-|-- packages/
-|   |-- common/                 # shared game types + validators
-|   |-- socket/                 # Socket.IO game server
-|   |   `-- src/services/
-|   |       |-- game.ts         # game state machine and scoring
-|   |       `-- registry.ts     # active game registry and cleanup
-|   `-- web/                    # Next.js app
-|       |-- prisma/             # schema + migrations + seed
-|       `-- src/
-|           |-- app/            # pages + API routes
-|           |-- components/     # UI components
-|           |-- lib/            # auth/db/guards/rate-limit
-|           `-- utils/          # helpers and constants
-|-- docker-compose.yml
-|-- Dockerfile
-`-- .env.example
+### ⏳ Waiting Room 
+<p align="center">
+  <img src="packages/web/public/GameWait.png" alt="Waiting Room Screen" width="700"/>
+</p>
+
+A clean and engaging waiting interface keeps players ready and informed before the game begins.
+
+---
+
+### ⚡ Live Game Play
+<p align="center">
+  <img src="packages/web/public/Live game.png" alt="Live Game Screen" width="700"/>
+</p>
+
+Enjoy seamless real-time gameplay with instant responses, dynamic scoring, and a live leaderboard.
+
+---
+
+## 🌐 Deployment
+
+| Service | URL |
+|---|---|
+| 🌍 Frontend (Vercel) | [https://quoosh.vercel.app](https://quoosh.vercel.app) |
+| ⚙️ Backend (Railway) | [https://quoosh-production.up.railway.app](https://quoosh-production.up.railway.app) |
+
+---
+
+## 🏗️ Architecture Overview
+
+Quoosh uses a **split architecture**: an HTTP server for pages and APIs, and a separate long-lived WebSocket process for real-time game state.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                          Internet / LAN                      │
+└──────────────┬────────────────────────────────────────┬──────┘
+               │ HTTPS                                  │ WSS
+               ▼                                        ▼
+     ┌──────────────────────┐                 ┌──────────────────────┐
+     │  Browser (Host)      │                 │  Socket.IO :3001     │
+     │  Next.js pages +     │                 │  packages/socket     │
+     │  React client        │◄───────────────►│  Long-lived process  │
+     └──────────┬───────────┘                 └──────────────────────┘
+                │ HTTP REST /api/*
+                ▼
+     ┌─────────────────────────┐       ┌──────────────────┐
+     │  Next.js 16 — web :3000 │──────►│  PostgreSQL (DB) │
+     │  App Router · API routes│       │  Prisma ORM      │
+     │  Auth.js session cookies│       └──────────────────┘
+     └─────────────────────────┘
+                                        ┌──────────────────┐
+     ┌──────────────────────┐           │  Upstash Redis   │
+     │  Browser (Player)    │──  WSS ──►│  Rate-limiting   │
+     └──────────────────────┘           └──────────────────┘
+
+     ┌──────────────────────┐           ┌──────────────────┐
+     │  Google OAuth/Gemini │           │  Resend          │
+     │  (server-side)       │           │  Contact email   │
+     └──────────────────────┘           └──────────────────┘
 ```
 
-## Getting Started
+> **Why two processes?**
+></br> Next.js API routes run as serverless functions, which can't hold persistent in-memory game state. The Socket.IO server is a dedicated Node.js process that lives as long as the game does.
+
+---
+
+## 🗂️ Monorepo Structure
+
+This project is a **pnpm workspace monorepo** — one repo, multiple packages, shared code via TypeScript path aliases.
+
+```
+quoosh/
+├── .env.example                 # Copy to .env — never commit .env
+├── package.json                 # Root scripts: dev, build, lint, start
+├── pnpm-workspace.yaml          # Workspace globs: packages/*
+├── tsconfig.json                # Base TS + @quoosh/* path aliases
+├── config/
+│   ├── game.json                # Manager password, music config
+│   └── quizz/                   # Quiz JSON files (generated at host-time)
+└── packages/
+    ├── common/                  # Shared types + validators
+    │   └── src/
+    │       ├── types/game/      # socket.ts, status.ts, index.ts
+    │       └── validators/      # auth.ts (Zod invite/username validators)
+    ├── socket/                  # Real-time game server
+    │   └── src/
+    │       ├── index.ts         # Socket.IO server + /admin namespace
+    │       └── services/        # game.ts, registry.ts, config.ts
+    └── web/                     # Next.js app (frontend + API)
+        ├── prisma/              # schema.prisma, seed.ts, migrations/
+        └── src/
+            ├── app/             # App Router: pages + API routes
+            ├── components/      # UI components
+            ├── contexts/        # SocketProvider
+            ├── stores/          # Zustand: player, manager, question
+            └── lib/             # auth.ts, db.ts, ratelimit.ts
+```
+
+### Package Dependency Graph
+
+```
+@quoosh/common  ──────────────────────────── (no internal deps)
+@quoosh/socket  ──► @quoosh/common
+@quoosh/web     ──► @quoosh/common, Prisma, Next.js, Auth.js, ...
+```
+
+---
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+### Frontend
+
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Zustand](https://img.shields.io/badge/Zustand-000000?style=for-the-badge&logo=react&logoColor=white)](https://zustand-demo.pmnd.rs)
+[![Zod](https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white)](https://zod.dev)
+
+### Backend & Database
+
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://upstash.com)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socketdotio&logoColor=white)](https://socket.io)
+
+### Auth, AI & Infra
+
+[![Auth.js](https://img.shields.io/badge/Auth.js-000000?style=for-the-badge&logo=authelia&logoColor=white)](https://authjs.dev)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com)
+[![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app)
+[![Neon](https://img.shields.io/badge/Neon-00E5A0?style=for-the-badge&logo=neon&logoColor=black)](https://neon.tech)
+[![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io)
+
+</div>
+
+<br />
+
+
+### 🧰 Core Technologies - Detailed Breakdown
+> #### Frontend (`packages/web`)
+
+| Technology | Version | Purpose |
+|---|---|---|
+| **Next.js** | 16.1.5 | React framework, App Router, SSR |
+| **Tailwind CSS** | 4.2.2 | Utility-first styling |
+| **Auth.js** (next-auth) | 5.0.0-beta | Sessions, Google OAuth, credentials |
+| **Socket.IO client** | ^4.8.3 | Real-time game connection |
+| **Zustand** | ^5.0.10 | Global game state |
+| **Zod** | ^4.3.6 | Schema + env validation |
+| **Motion** | ^12.29.2 | Animations |
+| **React Hook Form** | ^7.71.2 | Form state management |
+| **@dnd-kit** | ^6–10 | Drag-and-drop quiz builder |
+| **AI SDK (Google)** | ^3.0.43 | Gemini quiz generation |
+| **react-hot-toast** | ^2.6.0 | Notifications |
+| **react-qr-code** | ^2.0.18 | Game invite QR codes |
+
+>#### Backend / API (`packages/web`)
+
+| Technology | Version | Purpose |
+|---|---|---|
+| **Prisma** | 5.22.0 | ORM + database migrations |
+| **PostgreSQL** (Neon) | — | Primary database |
+| **Upstash Redis** | ^1.37.0 | Rate limiting (optional) |
+| **Resend** | ^6.9.4 | Contact form email |
+| **bcryptjs** | ^3.0.3 | Password hashing (cost 12) |
+
+> #### Real-time Server (`packages/socket`)
+
+| Technology | Version | Purpose |
+|---|---|---|
+| **Socket.IO** | ^4.8.3 | WebSocket game server |
+| **esbuild** | ^0.27.2 | Production bundle |
+| **tsx** | ^4.21.0 | TypeScript runner (dev) |
+| **Zod** | ^4.3.6 | Env validation |
+
+---
+
+## 🗜️ Database Schema
+
+```
+                    ┌──────────────┐
+                    │     User     │  role: HOST | ADMIN
+                    └──────┬───────┘
+           quizzes │       │ sessions (as host)
+                    ▼       ▼
+              ┌─────┴───────┴─────────┐
+              │         Quiz          │  status: PENDING | APPROVED | REJECTED
+              └───────┬───────────────┘
+                      │ 1:N
+                      ▼
+              ┌───────────────┐
+              │   Question    │  answers: String[], solution: Int, order: Int
+              └───────┬───────┘
+                      │
+┌─────────────┐   ┌──────────────┐   ┌────────────────┐
+│ QuizSession │───│PlayerSession │───│ PlayerAnswer   │
+│ inviteCode  │   │ nickname     │   │ per question   │
+└──────┬──────┘   └──────────────┘   └────────────────┘
+       │        ┌────────────┐
+       └────────│   Report   │  status: OPEN | RESOLVED | DISMISSED
+                └────────────┘
+
+┌──────────────┐   ┌──────────────────┐
+│ Announcement │──►│  User (admin FK) │
+└──────────────┘   └──────────────────┘
+
+┌─────────────────┐
+│ PlatformSetting │  key / value (admin-configurable)
+└─────────────────┘
+```
+
+>### Enums
+
+| Enum | Values |
+|---|---|
+| `Role` | `HOST`, `ADMIN` |
+| `QuizStatus` | `PENDING`, `APPROVED`, `REJECTED` |
+| `ReportStatus` | `OPEN`, `RESOLVED`, `DISMISSED` |
+
+---
+
+## 🌊 Game Flow (State Machine)
+
+| Phase | Host sees | Player sees | Trigger |
+|---|---|---|---|
+| **Lobby** | `SHOW_ROOM` + invite code | Wait screen | `manager:startGame` |
+| **Countdown** | `SHOW_START`, `SHOW_PREPARED` | Same | Auto (timers) |
+| **Question** | `SHOW_QUESTION` | `SELECT_ANSWER` | Auto |
+| **Results** | `SHOW_RESPONSES` (all answers) | `SHOW_RESULT` (rank + points) | Timer ends |
+| **Leaderboard** | `SHOW_LEADERBOARD` | Leaderboard | `manager:showLeaderboard` |
+| **Next Round** | Next question | Next question | `manager:nextQuestion` |
+| **Finish** | `FINISHED` + podium | Podium | Last round ends |
+
+---
+
+## ⚙️ Environment Variables
+
+Copy `.env.example` to `.env` in the repository root.
+
+### Required
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string (e.g. Neon) |
+| `AUTH_SECRET` | 32-byte hex secret for JWT signing |
+| `AUTH_URL` | Canonical site URL, e.g. `http://localhost:3000` |
+| `NEXT_PUBLIC_SOCKET_URL` | Public URL of the Socket.IO server |
+| `WEB_ORIGIN` | CORS origin for the socket server |
+| `ADMIN_SOCKET_SECRET` | Shared secret for admin WebSocket namespace |
+
+### Optional
+
+| Variable | Description |
+|---|---|
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Enables Google OAuth |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Enables AI quiz generation (Gemini) |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Enables rate limiting |
+| `RESEND_API_KEY` | Enables contact form email |
+| `NEXT_PUBLIC_APP_URL` | Base URL for sitemap/robots.txt |
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 20+
-- pnpm 9+
-- PostgreSQL (or Docker)
+- Node.js **20+**
+- pnpm (`npm i -g pnpm`)
+- PostgreSQL database (local or [Neon](https://neon.tech))
 
-### 1) Clone and install
+### Setup
 
 ```bash
-git clone <your-repo-url>
-cd quoosh
+# 1. Clone the repository
+git clone https://github.com/Sanchet237/Quoosh.git
+cd Quoosh
+
+# 2. Install all workspace packages
 pnpm install
-```
 
-### 2) Configure environment
-
-```bash
+# 3. Configure environment
 cp .env.example .env
-```
+# Edit .env — set DATABASE_URL, AUTH_SECRET, socket URLs
 
-Fill the required variables (see [Environment Variables](#environment-variables)).
+# 4. Run database migrations and seed admin user
+cd packages/web
+pnpm exec prisma migrate deploy
+pnpm exec prisma db seed
+cd ../..
 
-### 3) Prepare database
-
-```bash
-pnpm --filter @quoosh/web exec prisma migrate deploy
-pnpm --filter @quoosh/web exec prisma db seed
-```
-
-### 4) Run in development
-
-```bash
+# 5. Start development servers (web + socket)
 pnpm dev
 ```
 
-By default:
+Open [http://localhost:3000](http://localhost:3000)
 
-- Web app: `http://localhost:3000`
-- Socket server: `http://localhost:3001`
+**Default admin credentials** (from seed):
 
-## Environment Variables
-
-Use `.env.example` as the source of truth.
-
-### Required for local baseline
-
-| Variable | Required | Purpose |
-|---|---|---|
-| `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `AUTH_SECRET` or `NEXTAUTH_SECRET` | Yes | Auth.js JWT/session signing |
-| `SOCKET_URL` | Yes | Server-side socket URL used by web app |
-| `NEXT_PUBLIC_SOCKET_URL` | Yes | Client-side socket URL |
-| `ADMIN_SOCKET_SECRET` | Yes | Shared secret for manager/admin socket ops (min 32 chars) |
-| `NEXT_PUBLIC_ADMIN_SOCKET_SECRET` | Yes | Client-side secret for admin namespace auth |
-| `WEB_ORIGIN` | Recommended | CORS origin for socket server |
-
-### Optional but recommended
-
-| Variable | Purpose |
+| Field | Value |
 |---|---|
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth login |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | AI quiz generation |
-| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Registration/login rate limiting |
-| `RESEND_API_KEY`, `CONTACT_EMAIL` | Contact form email delivery |
-| `NEXT_PUBLIC_APP_URL`, `AUTH_URL` | Canonical app/auth URLs |
-| `DB_PASSWORD` | Used by `docker-compose` Postgres service |
+| Email | `admin@quoosh.local` |
+| Password | `Admin@2026` |
 
-## Available Scripts
+### Verify
 
-### Root scripts
+```bash
+# Check database connectivity
+curl http://localhost:3000/api/health
+# → { "db": "connected" }
+```
+
+---
+
+## 📜 Scripts
 
 | Command | Description |
 |---|---|
-| `pnpm dev` | Runs all workspace apps in parallel |
-| `pnpm dev:web` | Starts only Next.js app |
-| `pnpm dev:socket` | Starts only socket server |
-| `pnpm build` | Builds all packages |
-| `pnpm start` | Starts all built apps in parallel |
-| `pnpm lint` | Runs lint across workspace |
+| `pnpm dev` | Start web + socket in development |
+| `pnpm dev:web` | Start only the Next.js app |
+| `pnpm dev:socket` | Start only the Socket.IO server |
+| `pnpm build` | Build all packages |
+| `pnpm start` | Start production servers |
+| `pnpm lint` | ESLint all packages |
+| `pnpm clean` | Remove `node_modules` and `dist` |
 
-### Useful package-level commands
+### Prisma (run from `packages/web`)
 
-```bash
-# Prisma workflows
-pnpm --filter @quoosh/web exec prisma generate
-pnpm --filter @quoosh/web exec prisma migrate dev
-pnpm --filter @quoosh/web exec prisma migrate deploy
-pnpm --filter @quoosh/web exec prisma db seed
-pnpm --filter @quoosh/web exec prisma studio
-```
+| Command | Description |
+|---|---|
+| `pnpm exec prisma migrate dev` | Create + apply a migration |
+| `pnpm exec prisma migrate deploy` | Apply migrations (production) |
+| `pnpm exec prisma studio` | Open Prisma Studio |
+| `pnpm exec prisma db seed` | Seed admin user |
 
-## Database and Seed
+---
 
-Prisma schema lives at:
+## 🚢 Deployment
 
-- `packages/web/prisma/schema.prisma`
+| Service | Platform | Notes |
+|---|---|---|
+| **Frontend + API** | [Vercel](https://vercel.com) | Set all env vars in project settings |
+| **Socket Server** | [Railway](https://railway.app) / Render / Fly | Needs persistent process (not serverless) |
+| **Database** | [Neon](https://neon.tech) | Serverless PostgreSQL |
+| **Redis** | [Upstash](https://upstash.com) | Optional — enables rate limiting |
 
-Seed file:
+**Key deployment checklist:**
+- [ ] Set `WEB_ORIGIN` and `NEXT_PUBLIC_SOCKET_URL` consistently
+- [ ] Change `ADMIN_SOCKET_SECRET` from default before going public
+- [ ] Run `prisma migrate deploy` against production DB
+- [ ] Configure Google OAuth redirect URIs in Google Cloud Console
 
-- `packages/web/prisma/seed.ts`
+---
 
-Current seed creates/updates an admin user:
+## 🤝 Contributing
 
-- **Email**: `admin@quoosh.local`
-- **Password**: `Admin@2026`
-- **Role**: `ADMIN`
+Contributions are welcome! This project is **open source** and open for improvements.
+Contributions are welcome!
 
-Change these defaults before production use.
+If you have ideas, improvements, or bug fixes:
+- Open an issue
+- Suggest a feature
+- Submit a PR
 
-## API Overview
+Let’s build Quoosh together 🚀
 
-Main routes live in `packages/web/src/app/api`.
+---
 
-### Host-facing routes
+## 📄 License
+This project is licensed under the **MIT License**.
 
-- `POST /api/creators/register` - register host account
-- `GET /api/quizzes` - list host quizzes
-- `POST /api/quizzes` - create quiz
-- `GET /api/quizzes/:id` - fetch full quiz
-- `PATCH /api/quizzes/:id` - update quiz/questions
-- `DELETE /api/quizzes/:id` - delete quiz
-- `POST /api/quizzes/:id/host` - transform quiz for live hosting
-- `POST /api/quizzes/generate` - AI-generated quiz questions
+You are free to use, modify, and distribute this software with proper attribution.  
+See the [`LICENSE`](LICENSE) file for full details.
 
-### Admin routes
+---
 
-- `GET /api/admin/overview`
-- `GET /api/admin/hosts`
-- `GET /api/admin/players`
-- `GET /api/admin/quizzes`
-- `GET /api/admin/sessions`
-- `GET/PATCH /api/admin/sessions/:id`
-- `GET/PATCH /api/admin/moderation`
-- `GET/POST /api/admin/settings`
-- `GET/POST /api/admin/announcements`
-- `PATCH /api/admin/announcements/:id`
+## 👤 Author
 
-### Utility routes
+</br>
+<div align="center">
+ <img src="packages/web/src/assets/logo.svg" width="80" />
 
-- `GET /api/health` - DB connectivity health check
-- `POST /api/contact` - contact form mail dispatch
-- `GET /api/env` and `GET /env` - environment diagnostics alias
-- `GET /api/images/proxy?url=...` - server-side remote image proxy
+Made with ❤️ by <a href="https://github.com/Sanchet237"><strong>Sanchet Kolekar</strong></a>
 
-## Socket Events Overview
+⭐ If you like **Quoosh**, consider giving it a star — it helps the project grow!
 
-Socket server entry: `packages/socket/src/index.ts`
+</div>
+<div align="center">
+  <a href="https://github.com/Sanchet237">
+    <img src="https://img.shields.io/badge/GitHub-Profile-181717?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+  <a href="https://www.linkedin.com/in/sanchet-kolekar-613916331/">
+    <img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+  <a href="https://www.instagram.com/sanchetkolekar">
+    <img src="https://img.shields.io/badge/Instagram-Follow-E4405F?style=for-the-badge&logo=instagram&logoColor=white" />
+  </a>
+  <a href="https://x.com/Sanchet_237">
+    <img src="https://img.shields.io/badge/X-Follow-000000?style=for-the-badge&logo=x&logoColor=white" />
+  </a>
+  <a href="mailto:sanchetkolekar.07@gmail.com">
+    <img src="https://img.shields.io/badge/Gmail-Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white" />
+  </a>
 
-### Player events
+</div>
 
-- `player:join`, `player:login`, `player:selectedAnswer`, `player:reconnect`
-- Receives: `game:status`, `game:cooldown`, `game:reset`, etc.
-
-### Manager events
-
-- `manager:hostDirect`, `manager:startGame`, `manager:nextQuestion`, `manager:showLeaderboard`, `manager:abortQuiz`, `manager:kickPlayer`, `manager:reconnect`
-- Receives: `manager:gameCreated`, `manager:newPlayer`, `manager:errorMessage`, etc.
-
-### Admin namespace (`/admin`)
-
-- Authenticated by `ADMIN_SOCKET_SECRET`
-- Supports:
-  - `admin:getSessions`
-  - `admin:terminateSession`
-  - periodic `admin:sessions` broadcasts
-
-## Deployment
-
-### Docker Compose
-
-Run web + socket + postgres together:
-
-```bash
-docker compose up --build -d
-```
-
-Services:
-
-- `web` on `:3000`
-- `socket` on `:3001`
-- `db` on `:5432`
-
-### Dockerfile
-
-The root `Dockerfile` is multi-stage with separate targets:
-
-- `web` target: Next.js standalone server
-- `socket` target: bundled `dist/index.cjs`
-
-### Railway
-
-`railway.json` is configured for Dockerfile-based build/deploy (socket start command shown there).
-
-## Security Notes
-
-- Auth and role checks enforced via:
-  - middleware route protection (`/dashboard`, `/admin`)
-  - API guards (`requireHost`, `requireAdmin`)
-- Admin pages return rewritten not-found for unauthorized users.
-- Registration/login rate limiting is enabled only when Upstash env vars are set.
-- `ADMIN_SOCKET_SECRET` must be strong (>=32 chars) in production.
-- Default seeded admin credentials should be rotated immediately.
-
-## Troubleshooting
-
-### 1) Prisma or DB connection issues
-
-- Verify `DATABASE_URL`
-- Ensure Postgres is reachable
-- Re-run:
-  - `pnpm --filter @quoosh/web exec prisma generate`
-  - `pnpm --filter @quoosh/web exec prisma migrate deploy`
-
-### 2) Socket connection fails
-
-- Verify:
-  - `SOCKET_URL`
-  - `NEXT_PUBLIC_SOCKET_URL`
-  - `WEB_ORIGIN`
-- Ensure socket service is running on expected port.
-
-### 3) Admin socket errors
-
-- Confirm `ADMIN_SOCKET_SECRET` and `NEXT_PUBLIC_ADMIN_SOCKET_SECRET` match.
-
-### 4) AI generation fails
-
-- Set `GOOGLE_GENERATIVE_AI_API_KEY`.
-
-### 5) Contact form fails
-
-- Set `RESEND_API_KEY` and `CONTACT_EMAIL`.
-
-## Contributing
-
-1. Create a feature branch.
-2. Keep changes focused and small.
-3. Run lint/build before opening PR:
-   - `pnpm lint`
-   - `pnpm build`
-4. Describe behavior changes and affected routes/components.
-
-## License
-
-No license file is currently defined in this repository.
-Add a `LICENSE` file if you plan to open-source distribution terms.
+---
