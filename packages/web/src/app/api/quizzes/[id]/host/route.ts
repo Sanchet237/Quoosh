@@ -40,17 +40,19 @@ export async function POST(
       questions: quiz.questions.map((q: any) => ({
         question: q.text,
         answers: q.answers,
+        solution: q.solution,       // ← THE FIX: was missing before
+        time: q.time ?? 20,         // ← THE FIX: was missing before
+        cooldown: q.cooldown ?? 5,  // ← THE FIX: was missing before
         image: resolveImageUrl(q.image) || undefined,
       })),
     }
 
-    // ✅ ADD THIS LINE
     const managerPassword = process.env.ADMIN_SOCKET_SECRET || ""
 
     return NextResponse.json({
       success: true,
       quiz: quizData,
-      managerPassword, // 🔥 THIS FIXES YOUR ISSUE
+      managerPassword,
     })
   } catch (error: any) {
     console.error("[QUIZ_HOST]", error)
