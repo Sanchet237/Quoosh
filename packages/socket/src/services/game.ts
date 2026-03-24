@@ -126,8 +126,11 @@ class Game {
   }
 
   join(socket: Socket, username: string, avatar?: string) {
+    // Always ensure a stable clientId; fall back to socket.id if auth not provided
+    const clientId = socket.handshake.auth.clientId || socket.id;
+
     const isAlreadyConnected = this.players.find(
-      (p) => p.clientId === socket.handshake.auth.clientId,
+      (p) => p.clientId === clientId,
     );
 
     if (isAlreadyConnected) {
@@ -148,12 +151,14 @@ class Game {
 
     const playerData = {
       id: socket.id,
-      clientId: socket.handshake.auth.clientId,
+      clientId,
       connected: true,
       username,
       avatar,
       points: 0,
     };
+
+    console.log(`[JOIN] Player ${username} joined. socketId: ${socket.id}, clientId: ${clientId}`);
 
     this.players.push(playerData);
 
@@ -230,7 +235,7 @@ class Game {
   }
 
   private reconnectPlayer(socket: Socket) {
-    const { clientId } = socket.handshake.auth;
+    const clientId = socket.handshake.auth.clientId || socket.id;
     const player = this.players.find((p) => p.clientId === clientId);
 
     if (!player) {
@@ -476,10 +481,13 @@ class Game {
     const question = this.quizz.questions[this.round.currentQuestion];
 
     if (!player) {
+      console.log(`[ANSWER] No player found for socketId: ${socket.id}. Players: ${this.players.map(p => `${p.username}(${p.id})`).join(', ')}`);
       return;
     }
 
-    if (this.round.playersAnswers.find((p) => p.clientId === player.clientId)) {
+    const alreadyAnswered = this.round.playersAnswers.find((p) => p.clientId === player.clientId);
+    if (alreadyAnswered) {
+      console.log(`[ANSWER] ${player.username} already answered. clientId: ${player.clientId}`);
       return;
     }
 
@@ -491,7 +499,7 @@ class Game {
       timestamp: Date.now(),
     });
 
-    console.log(`Player ${player.username} answered ${answerId} (solution: ${question.solution}), points: ${qPoints}`);
+    console.log(`[ANSWER] ${player.username} answered ${answerId} (solution: ${question.solution}). clientId: ${player.clientId}. Points earned: ${qPoints}`);
 
     // Real-time leaderboard update
     const currentStandings = this.players

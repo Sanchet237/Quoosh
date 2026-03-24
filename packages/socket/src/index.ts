@@ -32,26 +32,26 @@ io.on("connection", (socket) => {
   log(`A user connected: socketId: ${socket.id}, clientId: ${socket.handshake.auth.clientId}`)
 
   socket.on("player:reconnect", ({ gameId }) => {
-    const game = registry.getPlayerGame(gameId, socket.handshake.auth.clientId)
+    const clientId = socket.handshake.auth.clientId || socket.id
+    const game = registry.getPlayerGame(gameId, clientId)
 
     if (game) {
       game.reconnect(socket)
 
-      
-return
+      return
     }
 
     socket.emit("game:reset", "Game not found")
   })
 
   socket.on("manager:reconnect", ({ gameId }) => {
-    const game = registry.getManagerGame(gameId, socket.handshake.auth.clientId)
+    const clientId = socket.handshake.auth.clientId || socket.id
+    const game = registry.getManagerGame(gameId, clientId)
 
     if (game) {
       game.reconnect(socket)
 
-      
-return
+      return
     }
 
     socket.emit("game:reset", "Game expired")
