@@ -8,9 +8,10 @@ export type Player = {
 };
 
 export type Answer = {
-  playerId: string;
+  clientId: string;
   answerId: number;
   points: number;
+  timestamp: number;
 };
 
 export type Quizz = {

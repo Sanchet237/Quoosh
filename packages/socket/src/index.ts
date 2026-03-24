@@ -180,13 +180,12 @@ return
     if (!player) {return}
 
     if (!game.started) {
-      game.players = game.players.filter((p) => p.id !== socket.id)
-      io.to(game.manager.id).emit("manager:removePlayer", player.id)
+      player.connected = false
+      io.to(game.manager.id).emit("manager:playerDisconnected", player.id)
       io.to(game.gameId).emit("game:totalPlayers", game.players.length)
-      log(`Removed player ${player.username} from game ${game.gameId}`)
+      log(`Player ${player.username} disconnected from game ${game.gameId}`)
 
-      
-return
+      return
     }
 
     player.connected = false

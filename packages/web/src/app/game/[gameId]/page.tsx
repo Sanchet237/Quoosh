@@ -3,6 +3,7 @@
 import { STATUS } from "@quoosh/common/types/game/status"
 import GameWrapper from "@quoosh/web/components/game/GameWrapper"
 import Answers from "@quoosh/web/components/game/states/Answers"
+import Leaderboard from "@quoosh/web/components/game/states/Leaderboard"
 import Podium from "@quoosh/web/components/game/states/Podium"
 import Prepared from "@quoosh/web/components/game/states/Prepared"
 import Question from "@quoosh/web/components/game/states/Question"
@@ -20,7 +21,7 @@ const Game = () => {
   const router = useRouter()
   const { socket } = useSocket()
   const { gameId: gameIdParam }: { gameId?: string } = useParams()
-  const { status, setPlayer, setGameId, setStatus, reset } = usePlayerStore()
+  const { status, setPlayer, setGameId, setStatus, setLeaderboard, reset } = usePlayerStore()
   const { setQuestionStates } = useQuestionStore()
 
   useEvent("connect", () => {
@@ -43,6 +44,10 @@ const Game = () => {
     if (name in GAME_STATE_COMPONENTS || name === STATUS.FINISHED) {
       setStatus(name, data)
     }
+  })
+
+  useEvent("game:leaderboard", ({ leaderboard }) => {
+    setLeaderboard(leaderboard)
   })
 
   useEvent("game:reset", (message) => {
@@ -87,6 +92,11 @@ const Game = () => {
 
     case STATUS.SELECT_ANSWER:
       component = <Answers data={status.data} />
+
+      break
+
+    case STATUS.SHOW_LEADERBOARD:
+      component = <Leaderboard data={status.data} />
 
       break
 

@@ -34,6 +34,7 @@ export interface ServerToClientEvents {
   "game:reset": (_message: string) => void;
   "game:updateQuestion": (_data: { current: number; total: number }) => void;
   "game:playerAnswer": (_count: number) => void;
+  "game:leaderboard": (_data: { leaderboard: Player[] }) => void;
 
   // Player events
   "player:successReconnect": (_data: {
@@ -62,6 +63,7 @@ export interface ServerToClientEvents {
   }) => void;
   "manager:newPlayer": (_player: Player) => void;
   "manager:removePlayer": (_playerId: string) => void;
+  "manager:playerDisconnected": (_playerId: string) => void;
   "manager:errorMessage": (_message: string) => void;
   "manager:playerKicked": (_playerId: string) => void;
 }

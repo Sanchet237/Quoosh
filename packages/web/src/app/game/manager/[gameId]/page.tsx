@@ -21,7 +21,7 @@ const ManagerGame = () => {
   const router = useRouter()
   const { gameId: gameIdParam }: { gameId?: string } = useParams()
   const { socket } = useSocket()
-  const { gameId, status, setGameId, setStatus, setPlayers, reset } =
+  const { gameId, status, setGameId, setStatus, setPlayers, setLeaderboard, reset } =
     useManagerStore()
   const { setQuestionStates } = useQuestionStore()
 
@@ -29,6 +29,10 @@ const ManagerGame = () => {
     if (name in GAME_STATE_COMPONENTS_MANAGER) {
       setStatus(name, data)
     }
+  })
+
+  useEvent("game:leaderboard", ({ leaderboard }) => {
+    setLeaderboard(leaderboard)
   })
 
   useEvent("connect", () => {

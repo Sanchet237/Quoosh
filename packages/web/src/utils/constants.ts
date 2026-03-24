@@ -42,6 +42,7 @@ export const GAME_STATE_COMPONENTS = {
   [STATUS.SHOW_START]: Start,
   [STATUS.SHOW_RESULT]: Result,
   [STATUS.SHOW_PREPARED]: Prepared,
+  [STATUS.SHOW_LEADERBOARD]: Leaderboard,
 }
 
 export const GAME_STATE_COMPONENTS_MANAGER = {

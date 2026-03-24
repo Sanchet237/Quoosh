@@ -51,9 +51,9 @@ const Leaderboard = ({ data: { oldLeaderboard, leaderboard } }: Props) => {
       </h2>
       <div className="flex w-full flex-col gap-2">
         <AnimatePresence mode="popLayout">
-          {displayedLeaderboard.map(({ id, username, avatar, points }) => (
+          {displayedLeaderboard.map(({ clientId, username, avatar, points }) => (
             <motion.div
-              key={id}
+              key={clientId}
               layout
               initial={{ opacity: 0, y: 50 }}
               animate={{
@@ -86,8 +86,8 @@ const Leaderboard = ({ data: { oldLeaderboard, leaderboard } }: Props) => {
               </div>
               {isAnimating ? (
                 <AnimatedPoints
-                  from={oldLeaderboard.find((u) => u.id === id)?.points || 0}
-                  to={leaderboard.find((u) => u.id === id)?.points || 0}
+                  from={oldLeaderboard.find((u) => u.clientId === clientId)?.points || 0}
+                  to={leaderboard.find((u) => u.clientId === clientId)?.points || 0}
                 />
               ) : (
                 <span className="drop-shadow-md">{points}</span>

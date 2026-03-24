@@ -4,6 +4,8 @@ A full-stack, real-time quiz platform inspired by Kahoot-style gameplay.
 
 Quoosh lets hosts create quizzes (manual, JSON import, or AI-generated), run live sessions over Socket.IO, and let players join instantly with an invite code - no account required.
 
+For a complete architecture and implementation deep dive, see [FULL_PROJECT_EXPLANATION.md](./FULL_PROJECT_EXPLANATION.md).
+
 ## Table of Contents
 
 - [Overview](#overview)
