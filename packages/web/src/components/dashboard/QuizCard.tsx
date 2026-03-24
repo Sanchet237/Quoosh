@@ -135,7 +135,7 @@ export default function QuizCard({
 
   return (
     <div
-      className="flex w-full overflow-hidden rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+      className="flex w-full flex-col sm:flex-row overflow-hidden rounded-xl transition-all duration-200 hover:-translate-y-0.5"
       style={{
         background: "#f5efe0",
         boxShadow: "0 3px 16px rgba(0,0,0,0.4)",
@@ -232,7 +232,7 @@ export default function QuizCard({
 
       {/* ── DIVIDER ──────────────────────────────────────────────── */}
       <div
-        className="my-3 w-px"
+        className="hidden sm:block my-3 w-px"
         style={{
           background:
             "repeating-linear-gradient(to bottom, #c4b89a 0px, #c4b89a 5px, transparent 5px, transparent 11px)",
@@ -240,7 +240,7 @@ export default function QuizCard({
       />
 
       {/* ── ACTIONS SECTION ──────────────────────────────────────── */}
-      <div className="flex shrink-0 flex-col justify-center gap-2 px-3 py-3">
+      <div className="flex shrink-0 flex-row sm:flex-col items-center justify-end sm:justify-center gap-2 px-3 py-3 border-t sm:border-t-0 border-dashed sm:border-l-0">
         <button onClick={handleHost} disabled={isHosting} className={BTN_HOST}>
           {isHosting ? "…" : "▶ HOST"}
         </button>
