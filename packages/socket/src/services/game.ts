@@ -413,7 +413,7 @@ class Game {
         );
 
         const isCorrect = playerAnswer
-          ? playerAnswer.answerId === question.solution
+          ? Number(playerAnswer.answerId) === Number(question.solution)
           : false;
 
         const points =
@@ -422,6 +422,8 @@ class Game {
         // Ensure we don't double count if showResults is called multiple times
         // though in the current flow it's not.
         player.points += points;
+
+        console.log(`Player ${player.username} points updated: ${player.points} (+${points}), isCorrect: ${isCorrect}`);
 
         return { ...player, lastCorrect: isCorrect, lastPoints: points };
       })
@@ -434,6 +436,7 @@ class Game {
       });
 
     this.players = sortedPlayers;
+    console.log("Updated players leaderboard after results:", this.players.map(p => ({ u: p.username, pts: p.points })));
 
     sortedPlayers.forEach((player, index) => {
       const rank = index + 1;
@@ -487,7 +490,7 @@ class Game {
         const pAnswer = this.round.playersAnswers.find(
           (a) => a.clientId === p.clientId,
         );
-        const isCorrect = pAnswer ? pAnswer.answerId === question.solution : false;
+        const isCorrect = pAnswer ? Number(pAnswer.answerId) === Number(question.solution) : false;
         const pPoints = pAnswer && isCorrect ? Math.round(pAnswer.points) : 0;
 
         return { ...p, tempPoints: p.points + pPoints };
