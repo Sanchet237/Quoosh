@@ -33,8 +33,4 @@ release.json
 npm-debug.log*
 pnpm-debug.log*
 
-# Local docs (not for repo)
-Project_Doc.md
-Prompt.md
-Quoosh_Project_Synopsis.md
-_append_doc.py
+
