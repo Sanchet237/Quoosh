@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="packages/web/src/assets/logo.svg"
+<img src="packages/web/src/assets/logo.svg"
        alt="Quoosh Logo"
        width="200"
        style="display:block; margin: 0 auto 6px;" />
@@ -15,8 +15,9 @@
 </div>
 
 ---
-![Quoosh Preview](packages/web/public/Landing.png)
----
+
+## ![Quoosh Preview](packages/web/public/Landing.png)
+
 <div align="center">
 
   <h3>
@@ -34,26 +35,28 @@ Designed to be **self-hosted**: fork it, configure it, and own your data complet
 
 ### ✨ Key Features
 
-| Feature | Description |
-|---|---|
-| 🎮 **Real-time Gameplay** | WebSocket-powered with instant score updates and live leaderboards |
-| 🤖 **AI Quiz Generator** | Auto-generate quizzes using Google Gemini |
-| 📥 **JSON Import** | Bulk-add questions from a structured JSON file |
-| 🔐 **Flexible Auth** | Google OAuth + Email/Password via Auth.js |
-| 🧑‍💼 **Admin Panel** | Manage hosts, moderate quizzes, view live sessions, post announcements |
-| 🛡️ **Rate Limiting** | Optional Upstash Redis-backed sliding-window rate limits |
-| 📊 **Session Telemetry** | Per-player, per-question answer tracking in PostgreSQL |
-| 📱 **Fully Responsive** | Seamlessly works on desktop, tablet, and mobile |
-| ⚡ **No Native App** | Everything runs entirely in the browser |
+| Feature                   | Description                                                            |
+| ------------------------- | ---------------------------------------------------------------------- |
+| 🎮 **Real-time Gameplay** | WebSocket-powered with instant score updates and live leaderboards     |
+| 🤖 **AI Quiz Generator**  | Auto-generate quizzes using Google Gemini                              |
+| 📥 **JSON Import**        | Bulk-add questions from a structured JSON file                         |
+| 🔐 **Flexible Auth**      | Google OAuth + Email/Password via Auth.js                              |
+| 🧑‍💼 **Admin Panel**        | Manage hosts, moderate quizzes, view live sessions, post announcements |
+| 🛡️ **Rate Limiting**      | Optional Upstash Redis-backed sliding-window rate limits               |
+| 📊 **Session Telemetry**  | Per-player, per-question answer tracking in PostgreSQL                 |
+| 📱 **Fully Responsive**   | Seamlessly works on desktop, tablet, and mobile                        |
+| ⚡ **No Native App**      | Everything runs entirely in the browser                                |
 
 ---
+
 ## 🖼️ UI Preview
 
 Explore the core experience of **Quoosh** across both host and player perspectives.
 
 ---
 
-### 🎯 Host Dashboard 
+### 🎯 Host Dashboard
+
 <p align="center">
   <img src="packages/web/public/Create Quiz Dash.png" alt="Create Quiz Dashboard" width="700"/>
 </p>
@@ -62,7 +65,8 @@ Create, edit, and manage quizzes effortlessly with a fast, intuitive dashboard d
 
 ---
 
-### 🔑 Player Join 
+### 🔑 Player Join
+
 <p align="center">
   <img src="packages/web/public/Join Game.png" alt="Join Game Screen" width="700" />
 </p>
@@ -71,7 +75,8 @@ Players can instantly join any quiz using a simple 6-character game PIN — no l
 
 ---
 
-### ⏳ Waiting Room 
+### ⏳ Waiting Room
+
 <p align="center">
   <img src="packages/web/public/GameWait.png" alt="Waiting Room Screen" width="700"/>
 </p>
@@ -81,6 +86,7 @@ A clean and engaging waiting interface keeps players ready and informed before t
 ---
 
 ### ⚡ Live Game Play
+
 <p align="center">
   <img src="packages/web/public/Live game.png" alt="Live Game Screen" width="700"/>
 </p>
@@ -91,9 +97,9 @@ Enjoy seamless real-time gameplay with instant responses, dynamic scoring, and a
 
 ## 🌐 Deployment
 
-| Service | URL |
-|---|---|
-| 🌍 Frontend (Vercel) | [https://quoosh.vercel.app](https://quoosh.vercel.app) |
+| Service              | URL                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| 🌍 Frontend (Vercel) | [https://quoosh.vercel.app](https://quoosh.vercel.app)                               |
 | ⚙️ Backend (Railway) | [https://quoosh-production.up.railway.app](https://quoosh-production.up.railway.app) |
 
 ---
@@ -132,7 +138,7 @@ Quoosh uses a **split architecture**: an HTTP server for pages and APIs, and a s
 ```
 
 > **Why two processes?**
-></br> Next.js API routes run as serverless functions, which can't hold persistent in-memory game state. The Socket.IO server is a dedicated Node.js process that lives as long as the game does.
+> </br> Next.js API routes run as serverless functions, which can't hold persistent in-memory game state. The Socket.IO server is a dedicated Node.js process that lives as long as the game does.
 
 ---
 
@@ -212,43 +218,43 @@ quoosh/
 
 <br />
 
-
 ### 🧰 Core Technologies - Detailed Breakdown
+
 > #### Frontend (`packages/web`)
 
-| Technology | Version | Purpose |
-|---|---|---|
-| **Next.js** | 16.1.5 | React framework, App Router, SSR |
-| **Tailwind CSS** | 4.2.2 | Utility-first styling |
+| Technology              | Version    | Purpose                             |
+| ----------------------- | ---------- | ----------------------------------- |
+| **Next.js**             | 16.1.5     | React framework, App Router, SSR    |
+| **Tailwind CSS**        | 4.2.2      | Utility-first styling               |
 | **Auth.js** (next-auth) | 5.0.0-beta | Sessions, Google OAuth, credentials |
-| **Socket.IO client** | ^4.8.3 | Real-time game connection |
-| **Zustand** | ^5.0.10 | Global game state |
-| **Zod** | ^4.3.6 | Schema + env validation |
-| **Motion** | ^12.29.2 | Animations |
-| **React Hook Form** | ^7.71.2 | Form state management |
-| **@dnd-kit** | ^6–10 | Drag-and-drop quiz builder |
-| **AI SDK (Google)** | ^3.0.43 | Gemini quiz generation |
-| **react-hot-toast** | ^2.6.0 | Notifications |
-| **react-qr-code** | ^2.0.18 | Game invite QR codes |
+| **Socket.IO client**    | ^4.8.3     | Real-time game connection           |
+| **Zustand**             | ^5.0.10    | Global game state                   |
+| **Zod**                 | ^4.3.6     | Schema + env validation             |
+| **Motion**              | ^12.29.2   | Animations                          |
+| **React Hook Form**     | ^7.71.2    | Form state management               |
+| **@dnd-kit**            | ^6–10      | Drag-and-drop quiz builder          |
+| **AI SDK (Google)**     | ^3.0.43    | Gemini quiz generation              |
+| **react-hot-toast**     | ^2.6.0     | Notifications                       |
+| **react-qr-code**       | ^2.0.18    | Game invite QR codes                |
 
->#### Backend / API (`packages/web`)
+> #### Backend / API (`packages/web`)
 
-| Technology | Version | Purpose |
-|---|---|---|
-| **Prisma** | 5.22.0 | ORM + database migrations |
-| **PostgreSQL** (Neon) | — | Primary database |
-| **Upstash Redis** | ^1.37.0 | Rate limiting (optional) |
-| **Resend** | ^6.9.4 | Contact form email |
-| **bcryptjs** | ^3.0.3 | Password hashing (cost 12) |
+| Technology            | Version | Purpose                    |
+| --------------------- | ------- | -------------------------- |
+| **Prisma**            | 5.22.0  | ORM + database migrations  |
+| **PostgreSQL** (Neon) | —       | Primary database           |
+| **Upstash Redis**     | ^1.37.0 | Rate limiting (optional)   |
+| **Resend**            | ^6.9.4  | Contact form email         |
+| **bcryptjs**          | ^3.0.3  | Password hashing (cost 12) |
 
 > #### Real-time Server (`packages/socket`)
 
-| Technology | Version | Purpose |
-|---|---|---|
-| **Socket.IO** | ^4.8.3 | WebSocket game server |
-| **esbuild** | ^0.27.2 | Production bundle |
-| **tsx** | ^4.21.0 | TypeScript runner (dev) |
-| **Zod** | ^4.3.6 | Env validation |
+| Technology    | Version | Purpose                 |
+| ------------- | ------- | ----------------------- |
+| **Socket.IO** | ^4.8.3  | WebSocket game server   |
+| **esbuild**   | ^0.27.2 | Production bundle       |
+| **tsx**       | ^4.21.0 | TypeScript runner (dev) |
+| **Zod**       | ^4.3.6  | Env validation          |
 
 ---
 
@@ -286,27 +292,27 @@ quoosh/
 └─────────────────┘
 ```
 
->### Enums
+> ### Enums
 
-| Enum | Values |
-|---|---|
-| `Role` | `HOST`, `ADMIN` |
-| `QuizStatus` | `PENDING`, `APPROVED`, `REJECTED` |
-| `ReportStatus` | `OPEN`, `RESOLVED`, `DISMISSED` |
+| Enum           | Values                            |
+| -------------- | --------------------------------- |
+| `Role`         | `HOST`, `ADMIN`                   |
+| `QuizStatus`   | `PENDING`, `APPROVED`, `REJECTED` |
+| `ReportStatus` | `OPEN`, `RESOLVED`, `DISMISSED`   |
 
 ---
 
 ## 🌊 Game Flow (State Machine)
 
-| Phase | Host sees | Player sees | Trigger |
-|---|---|---|---|
-| **Lobby** | `SHOW_ROOM` + invite code | Wait screen | `manager:startGame` |
-| **Countdown** | `SHOW_START`, `SHOW_PREPARED` | Same | Auto (timers) |
-| **Question** | `SHOW_QUESTION` | `SELECT_ANSWER` | Auto |
-| **Results** | `SHOW_RESPONSES` (all answers) | `SHOW_RESULT` (rank + points) | Timer ends |
-| **Leaderboard** | `SHOW_LEADERBOARD` | Leaderboard | `manager:showLeaderboard` |
-| **Next Round** | Next question | Next question | `manager:nextQuestion` |
-| **Finish** | `FINISHED` + podium | Podium | Last round ends |
+| Phase           | Host sees                      | Player sees                   | Trigger                   |
+| --------------- | ------------------------------ | ----------------------------- | ------------------------- |
+| **Lobby**       | `SHOW_ROOM` + invite code      | Wait screen                   | `manager:startGame`       |
+| **Countdown**   | `SHOW_START`, `SHOW_PREPARED`  | Same                          | Auto (timers)             |
+| **Question**    | `SHOW_QUESTION`                | `SELECT_ANSWER`               | Auto                      |
+| **Results**     | `SHOW_RESPONSES` (all answers) | `SHOW_RESULT` (rank + points) | Timer ends                |
+| **Leaderboard** | `SHOW_LEADERBOARD`             | Leaderboard                   | `manager:showLeaderboard` |
+| **Next Round**  | Next question                  | Next question                 | `manager:nextQuestion`    |
+| **Finish**      | `FINISHED` + podium            | Podium                        | Last round ends           |
 
 ---
 
@@ -316,24 +322,24 @@ Copy `.env.example` to `.env` in the repository root.
 
 ### Required
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string (e.g. Neon) |
-| `AUTH_SECRET` | 32-byte hex secret for JWT signing |
-| `AUTH_URL` | Canonical site URL, e.g. `http://localhost:3000` |
-| `NEXT_PUBLIC_SOCKET_URL` | Public URL of the Socket.IO server |
-| `WEB_ORIGIN` | CORS origin for the socket server |
-| `ADMIN_SOCKET_SECRET` | Shared secret for admin WebSocket namespace |
+| Variable                 | Description                                      |
+| ------------------------ | ------------------------------------------------ |
+| `DATABASE_URL`           | PostgreSQL connection string (e.g. Neon)         |
+| `AUTH_SECRET`            | 32-byte hex secret for JWT signing               |
+| `AUTH_URL`               | Canonical site URL, e.g. `http://localhost:3000` |
+| `NEXT_PUBLIC_SOCKET_URL` | Public URL of the Socket.IO server               |
+| `WEB_ORIGIN`             | CORS origin for the socket server                |
+| `ADMIN_SOCKET_SECRET`    | Shared secret for admin WebSocket namespace      |
 
 ### Optional
 
-| Variable | Description |
-|---|---|
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Enables Google OAuth |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Enables AI quiz generation (Gemini) |
-| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Enables rate limiting |
-| `RESEND_API_KEY` | Enables contact form email |
-| `NEXT_PUBLIC_APP_URL` | Base URL for sitemap/robots.txt |
+| Variable                                    | Description                         |
+| ------------------------------------------- | ----------------------------------- |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Enables Google OAuth                |
+| `GOOGLE_GENERATIVE_AI_API_KEY`              | Enables AI quiz generation (Gemini) |
+| `UPSTASH_REDIS_REST_URL` / `_TOKEN`         | Enables rate limiting               |
+| `RESEND_API_KEY`                            | Enables contact form email          |
+| `NEXT_PUBLIC_APP_URL`                       | Base URL for sitemap/robots.txt     |
 
 ---
 
@@ -371,12 +377,16 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-**Default admin credentials** (from seed):
+## Seed Data
 
-| Field | Value |
-|---|---|
-| Email | `admin@quoosh.local` |
-| Password | `Admin@2026` |
+A default admin user may be created during the seeding process.
+
+After running the seed script:
+
+- Log in using the seeded credentials
+- Immediately update the password for security
+
+⚠️ Do not use default credentials in production environments.
 
 ### Verify
 
@@ -390,37 +400,38 @@ curl http://localhost:3000/api/health
 
 ## 📜 Scripts
 
-| Command | Description |
-|---|---|
-| `pnpm dev` | Start web + socket in development |
-| `pnpm dev:web` | Start only the Next.js app |
-| `pnpm dev:socket` | Start only the Socket.IO server |
-| `pnpm build` | Build all packages |
-| `pnpm start` | Start production servers |
-| `pnpm lint` | ESLint all packages |
-| `pnpm clean` | Remove `node_modules` and `dist` |
+| Command           | Description                       |
+| ----------------- | --------------------------------- |
+| `pnpm dev`        | Start web + socket in development |
+| `pnpm dev:web`    | Start only the Next.js app        |
+| `pnpm dev:socket` | Start only the Socket.IO server   |
+| `pnpm build`      | Build all packages                |
+| `pnpm start`      | Start production servers          |
+| `pnpm lint`       | ESLint all packages               |
+| `pnpm clean`      | Remove `node_modules` and `dist`  |
 
 ### Prisma (run from `packages/web`)
 
-| Command | Description |
-|---|---|
-| `pnpm exec prisma migrate dev` | Create + apply a migration |
+| Command                           | Description                   |
+| --------------------------------- | ----------------------------- |
+| `pnpm exec prisma migrate dev`    | Create + apply a migration    |
 | `pnpm exec prisma migrate deploy` | Apply migrations (production) |
-| `pnpm exec prisma studio` | Open Prisma Studio |
-| `pnpm exec prisma db seed` | Seed admin user |
+| `pnpm exec prisma studio`         | Open Prisma Studio            |
+| `pnpm exec prisma db seed`        | Seed admin user               |
 
 ---
 
 ## 🚢 Deployment
 
-| Service | Platform | Notes |
-|---|---|---|
-| **Frontend + API** | [Vercel](https://vercel.com) | Set all env vars in project settings |
-| **Socket Server** | [Railway](https://railway.app) / Render / Fly | Needs persistent process (not serverless) |
-| **Database** | [Neon](https://neon.tech) | Serverless PostgreSQL |
-| **Redis** | [Upstash](https://upstash.com) | Optional — enables rate limiting |
+| Service            | Platform                                      | Notes                                     |
+| ------------------ | --------------------------------------------- | ----------------------------------------- |
+| **Frontend + API** | [Vercel](https://vercel.com)                  | Set all env vars in project settings      |
+| **Socket Server**  | [Railway](https://railway.app) / Render / Fly | Needs persistent process (not serverless) |
+| **Database**       | [Neon](https://neon.tech)                     | Serverless PostgreSQL                     |
+| **Redis**          | [Upstash](https://upstash.com)                | Optional — enables rate limiting          |
 
 **Key deployment checklist:**
+
 - [ ] Set `WEB_ORIGIN` and `NEXT_PUBLIC_SOCKET_URL` consistently
 - [ ] Change `ADMIN_SOCKET_SECRET` from default before going public
 - [ ] Run `prisma migrate deploy` against production DB
@@ -434,6 +445,7 @@ Contributions are welcome! This project is **open source** and open for improvem
 Contributions are welcome!
 
 If you have ideas, improvements, or bug fixes:
+
 - Open an issue
 - Suggest a feature
 - Submit a PR
@@ -443,6 +455,7 @@ Let’s build Quoosh together 🚀
 ---
 
 ## 📄 License
+
 This project is licensed under the **MIT License**.
 
 You are free to use, modify, and distribute this software with proper attribution.  
